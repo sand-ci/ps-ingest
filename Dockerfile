@@ -1,4 +1,4 @@
-FROM ubuntu/ubuntu:latest
+FROM ubuntu:latest
 
 LABEL maintainer Ilija Vukotic <ivukotic@cern.ch>
 
@@ -36,13 +36,13 @@ RUN pip install --upgrade pip && \
 # Python 2 packages
 ##############################
 
-RUN pip2 --no-cache-dir install elasticsearch
+RUN pip2 --no-cache-dir install elasticsearch requests stomp.py
 
 #############################
 # Python 3 packages
 #############################
 
-RUN pip3 --no-cache-dir install elasticsearch
+RUN pip3 --no-cache-dir install elasticsearch requests stomp.py
 
 # build info
 RUN echo "Timestamp:" `date --utc` | tee /image-build-info.txt
