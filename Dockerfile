@@ -44,5 +44,10 @@ RUN pip2 --no-cache-dir install elasticsearch requests stomp.py
 
 RUN pip3 --no-cache-dir install elasticsearch requests stomp.py
 
+ADD tools.py
+ADD siteMapping.py
+ADD NetworkLatencyCollector.py
+
+
 # build info
 RUN echo "Timestamp:" `date --utc` | tee /image-build-info.txt
