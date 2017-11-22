@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install curl wget -y
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && apt-get install -y --allow-unauthenticated \
+        bash \
         build-essential \
         git \
         libzmq3-dev \
