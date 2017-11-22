@@ -44,9 +44,9 @@ RUN pip2 --no-cache-dir install elasticsearch requests stomp.py
 
 RUN pip3 --no-cache-dir install elasticsearch requests stomp.py
 
-ADD tools.py
-ADD siteMapping.py
-ADD NetworkLatencyCollector.py
+ADD tools.py /.
+ADD siteMapping.py /.
+ADD NetworkLatencyCollector.py /.
 
 
 # build info
