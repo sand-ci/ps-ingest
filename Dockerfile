@@ -47,7 +47,17 @@ RUN pip3 --no-cache-dir install elasticsearch requests stomp.py
 ADD tools.py /.
 ADD siteMapping.py /.
 ADD NetworkLatencyCollector.py /.
+ADD NetworkLHCOPNCollector.py /.
+ADD NetworkMLTelemetryCollector.py /.
+ADD NetworkPacketLossCollector.py /.
+ADD NetworkRetransmitsCollector.py /.
+ADD NetworkThroughputCollector.py /.
+ADD NetworkTracerouteCollector.py /.
+ADD NetworkMetaCollector.py /.
+ADD NetworkStatusCollector.py /.
 
+# create self restarting services
+ADD nwThroughput.conf /etc/init/.
 
 # build info
 RUN echo "Timestamp:" `date --utc` | tee /image-build-info.txt
