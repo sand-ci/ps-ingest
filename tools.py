@@ -1,5 +1,5 @@
 """ few generally useful functions """
-
+import os
 import sys
 import time
 from elasticsearch import Elasticsearch, exceptions as es_exceptions
