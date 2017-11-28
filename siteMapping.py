@@ -127,40 +127,6 @@ def reload():
     print('throughputHosts reloaded:\n', throughputHosts)
     print('latencyHosts reloaded:\n', latencyHosts)
 
-    # try:
-    #     r=requests.get('https://myosg.grid.iu.edu/psmesh/json/name/wlcg-all')
-    #     res = r.json()
-    #     throughputHosts=[]
-    #     for o in res['organizations']:
-    #         for s in o['sites']:
-    #             for h in s['hosts']:
-    #                 for a in h['addresses']:
-    #                     print(a)
-    #                     ip=getIP(a)
-    #                     if ip!='unknown': throughputHosts.append(ip)
-    #     print(throughputHosts)
-    #     print('throughputHosts reloaded.')
-    # except:
-    #     print("Could not get perfsonar throughput hosts. Exiting...")
-    #     print("Unexpected error: ", str(sys.exc_info()[0]))
-    #
-    # try:
-    #     r=requests.get('https://myosg.grid.iu.edu/psmesh/json/name/wlcg-latency-all')
-    #     res = r.json()
-    #     latencyHosts=[]
-    #     for o in res['organizations']:
-    #         for s in o['sites']:
-    #             for h in s['hosts']:
-    #                 for a in h['addresses']:
-    #                     print(a)
-    #                     ip=getIP(a)
-    #                     if ip!='unknown': latencyHosts.append(ip)
-    #     print(latencyHosts)
-    #     print('latencyHosts reloaded.')
-    # except:
-    #     print("Could not get perfsonar latency hosts. Exiting...")
-    #     print("Unexpected error: ", str(sys.exc_info()[0]))
-
     print('All done.')
     ot = time.time()  # all updated so the next one will be in one day.
 

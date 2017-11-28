@@ -1,6 +1,5 @@
 """ few generally useful functions """
 
-import os
 import sys
 import time
 from elasticsearch import Elasticsearch, exceptions as es_exceptions
@@ -11,7 +10,7 @@ def get_es_connection():
     """
     establishes es connection.
     """
-    print("make sure we are connected right...")
+    print("make sure we are connected to ES...")
     try:
         es_conn = Elasticsearch([{'host': 'atlas-kibana.mwt2.org', 'port': 9200}])
         print("connected OK!")
@@ -43,9 +42,7 @@ def bulk_index(data, es_conn=None, thread_name=''):
     except es_exceptions.TransportError as error:
         print('TransportError ', error)
     except helpers.BulkIndexError as error:
-        print(error[0])
-        for i in error[1]:
-            print(i)
+        print(error)
     except:
         print('Something seriously wrong happened.')
     return success
@@ -58,3 +55,7 @@ def get_pass():
         return pas
     else:
         sys.exit(1)
+
+
+connection = None
+TOPIC = 'no topic defined.'

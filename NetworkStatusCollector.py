@@ -1,25 +1,24 @@
 #!/usr/bin/env python
 
-import Queue
+import queue
 import socket
 import time
 import threading
+from threading import Thread
 import copy
 import json
 from datetime import datetime
 
 import stomp
-import siteMapping
 import tools
+import siteMapping
 
-topic = '/topic/perfsonar.summary.status'
-
+tools.TOPIC = "/topic/perfsonar.summary.status"
 siteMapping.reload()
-
-conns = []
 
 
 class MyListener(object):
+
     def on_message(self, headers, message):
         q.put(message)
 
@@ -28,36 +27,37 @@ class MyListener(object):
 
     def on_heartbeat_timeout(self):
         print('AMQ - lost heartbeat. Needs a reconnect!')
-        connectToAMQ()
+        connect_to_MQ(reset=True)
 
     def on_disconnected(self):
         print('AMQ - no connection. Needs a reconnect!')
-        connectToAMQ()
+        connect_to_MQ(reset=True)
 
 
-def connectToAMQ():
-    global conns
-    for conn in conns:
-        if conn.is_connected():
-            print('disconnecting first ...')
-            conn.disconnect()
-    conns = []
+def connect_to_MQ(reset=False):
 
-    addresses = socket.getaddrinfo('netmon-mb.cern.ch', 61513)
-    ips = set()
-    for a in addresses:
-        ips.add(a[4][0])
-    allhosts = []
-    for ip in ips:
-        allhosts.append([(ip, 61513)])
+    if tools.connection is not None:
+        if reset and tools.connection.is_connected():
+            tools.connection.disconnect()
+            tools.connection = None
 
-    for host in allhosts:
-        conn = stomp.Connection(host, user='psatlflume', passcode=AMQ_PASS)
-        conn.set_listener('MyConsumer', MyListener())
-        conn.start()
-        conn.connect()
-        conn.subscribe(destination=topic, ack='auto', id="1", headers={})
-        conns.append(conn)
+        if tools.connection.is_connected():
+            return
+
+    print("connecting to MQ")
+    tools.connection = None
+
+    addresses = socket.getaddrinfo('clever-turkey.rmq.cloudamqp.com', 61614)
+    ip = addresses[0][4][0]
+    host_and_ports = [(ip, 61614)]
+    print(host_and_ports)
+
+    tools.connection = stomp.Connection(host_and_ports=host_and_ports, use_ssl=True, vhost='osg-nma')
+    tools.connection.set_listener('MyConsumer', MyListener())
+    tools.connection.start()
+    tools.connection.connect('ivukotic', AMQ_PASS, wait=True)
+    tools.connection.subscribe(destination=tools.TOPIC, ack='auto', id="1", headers={})
+    return
 
 
 def eventCreator():
@@ -97,20 +97,16 @@ def eventCreator():
 
 AMQ_PASS = tools.get_pass()
 
-connectToAMQ()
 
-q = Queue.Queue()
+q = queue.Queue()
 # start eventCreator threads
-for i in range(3):
-    t = threading.Thread(target=eventCreator)
+for i in range(1):
+    t = Thread(target=eventCreator)
     t.daemon = True
     t.start()
 
+
 while True:
-    time.sleep(60)
+    connect_to_MQ()
+    time.sleep(55)
     print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "qsize:", q.qsize())
-    for conn in conns:
-        if not conn.is_connected():
-            print('problem with connection. try reconnecting...')
-            connectToAMQ()
-            break
