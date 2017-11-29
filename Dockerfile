@@ -9,25 +9,24 @@ RUN apt-get update && apt-get install curl wget -y
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && apt-get install -y --allow-unauthenticated \
-        bash \
-        supervisord \
-        build-essential \
-        git \
-        libzmq3-dev \
-        module-init-tools \
-        pkg-config \
-        python \
-        python-dev \
-        python3 \
-        rsync \
-        software-properties-common \
-        unzip \
-        zip \
-        zlib1g-dev \
-        vim \
-        python-pip \
-        python3-pip \
-        && \
+    supervisor \
+    build-essential \
+    git \
+    libzmq3-dev \
+    module-init-tools \
+    pkg-config \
+    python \
+    python-dev \
+    python3 \
+    rsync \
+    software-properties-common \
+    unzip \
+    zip \
+    zlib1g-dev \
+    vim \
+    python-pip \
+    python3-pip \
+    && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
