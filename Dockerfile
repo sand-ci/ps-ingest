@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install curl wget -y
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && apt-get install -y --allow-unauthenticated \
         bash \
+        supervisord \
         build-essential \
         git \
         libzmq3-dev \
@@ -57,8 +58,11 @@ ADD NetworkTracerouteCollector.py /.
 ADD NetworkMetaCollector.py /.
 ADD NetworkStatusCollector.py /.
 
-# create self restarting services
-ADD nwThroughput.conf /etc/init/.
+# setup supervisord
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # build info
 RUN echo "Timestamp:" `date --utc` | tee /image-build-info.txt
+
+CMD ["/usr/bin/supervisord"]
