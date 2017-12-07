@@ -142,7 +142,6 @@ def eventCreator():
 
 
 RMQ_parameters = tools.get_RMQ_connection_parameters()
-tools.set_index_prefix()
 
 q = queue.Queue()
 # start eventCreator threads
