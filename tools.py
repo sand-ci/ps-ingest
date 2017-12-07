@@ -12,7 +12,7 @@ def get_es_connection():
     """
     print("make sure we are connected to ES...")
     try:
-        if os.environ['ES_USER'] and os.environ['ES_PASS'] and os.environ['ES_HOST']:
+        if 'ES_USER' in os.environ and 'ES_PASS' in os.environ and 'ES_HOST' in os.environ:
             es_conn = Elasticsearch(
                 [{'host': os.environ['ES_HOST'], 'port': 9200}],
                 http_auth=(os.environ['ES_USER'], os.environ['ES_PASS'])
@@ -23,7 +23,7 @@ def get_es_connection():
     except es_exceptions.ConnectionError as error:
         print('ConnectionError in get_es_connection: ', error)
     except:
-        print('Something seriously wrong happened.')
+        print('Something seriously wrong happened in getting ES connection.')
     else:
         return es_conn
 
