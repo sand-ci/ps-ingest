@@ -60,7 +60,7 @@ def get_RMQ_connection_parameters():
     for var in ret:
         val = os.environ[var]
         if val:
-            ret.var = val
+            ret[var] = val
         else:
             print('environment variable', var, 'not defined. Exiting.')
             sys.exit(1)
