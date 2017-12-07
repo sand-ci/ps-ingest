@@ -52,10 +52,14 @@ def connect_to_MQ(reset=False):
     host_and_ports = [(ip, 61614)]
     print(host_and_ports)
 
-    tools.connection = stomp.Connection(host_and_ports=host_and_ports, use_ssl=True, vhost='osg-nma')
+    tools.connection = stomp.Connection(
+        host_and_ports=host_and_ports,
+        use_ssl=True,
+        vhost=RMQ_parameters['RMQ_VHOST']
+    )
     tools.connection.set_listener('MyConsumer', MyListener())
     tools.connection.start()
-    tools.connection.connect('ivukotic', AMQ_PASS, wait=True)
+    tools.connection.connect(RMQ_parameters['RMQ_USER'], RMQ_parameters['RMQ_PASS'], wait=True)
     tools.connection.subscribe(destination=tools.TOPIC, ack='auto', id="1", headers={})
     return
 
@@ -101,7 +105,7 @@ def eventCreator():
         # print(su)
         for ts in dp:
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = "network_weather-" + \
+            data['_index'] = tools.index_prefix + \
                 str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             data['hops'] = []
@@ -140,8 +144,8 @@ def eventCreator():
                 aLotOfData = []
 
 
-AMQ_PASS = tools.get_pass()
-
+RMQ_parameters = tools.get_RMQ_connection_parameters()
+tools.set_index_prefix()
 
 q = queue.Queue()
 # start eventCreator threads

@@ -12,10 +12,16 @@ def get_es_connection():
     """
     print("make sure we are connected to ES...")
     try:
-        es_conn = Elasticsearch([{'host': 'atlas-kibana.mwt2.org', 'port': 9200}])
+        if os.environ['ES_USER'] and os.environ['ES_PASS'] and os.environ['ES_HOST']:
+            es_conn = Elasticsearch(
+                [{'host': os.environ['ES_HOST'], 'port': 9200}],
+                http_auth=(os.environ['ES_USER'], os.environ['ES_PASS'])
+            )
+        else:
+            es_conn = Elasticsearch([{'host': 'atlas-kibana.mwt2.org', 'port': 9200}])
         print("connected OK!")
     except es_exceptions.ConnectionError as error:
-        print('ConnectionError in GetESConnection: ', error)
+        print('ConnectionError in get_es_connection: ', error)
     except:
         print('Something seriously wrong happened.')
     else:
@@ -48,14 +54,21 @@ def bulk_index(data, es_conn=None, thread_name=''):
     return success
 
 
-def get_pass():
-    """ read pass from the environment """
-    pas = os.environ['AMQ_PASS']
-    if pas:
-        return pas
-    else:
-        sys.exit(1)
+def get_RMQ_connection_parameters():
+    """ read vhost, user, pass from the environment """
+    ret = {'RMQ_VHOST': '', 'RMQ_USER': '', 'RMQ_PASS': ''}
+    for var in ret:
+        val = os.environ[var]
+        if val:
+            ret.var = val
+        else:
+            print('environment variable', var, 'not defined. Exiting.')
+            sys.exit(1)
+    return ret
 
 
+# MQ connection - here to make it global
 connection = None
+
 TOPIC = 'no topic defined.'
+index_prefix = 'network_weather-'

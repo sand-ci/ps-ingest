@@ -8,6 +8,7 @@ from threading import Thread
 import copy
 import json
 from datetime import datetime
+import math
 
 import stomp
 import tools
@@ -26,11 +27,11 @@ class MyListener(object):
         print('received an error %s' % message)
 
     def on_heartbeat_timeout(self):
-        print('AMQ - lost heartbeat. Needs a reconnect!')
+        print('MQ - lost heartbeat. Needs a reconnect!')
         connect_to_MQ(reset=True)
 
     def on_disconnected(self):
-        print('AMQ - no connection. Needs a reconnect!')
+        print('MQ - no connection. Needs a reconnect!')
         connect_to_MQ(reset=True)
 
 
@@ -52,10 +53,14 @@ def connect_to_MQ(reset=False):
     host_and_ports = [(ip, 61614)]
     print(host_and_ports)
 
-    tools.connection = stomp.Connection(host_and_ports=host_and_ports, use_ssl=True, vhost='osg-nma')
+    tools.connection = stomp.Connection(
+        host_and_ports=host_and_ports,
+        use_ssl=True,
+        vhost=RMQ_parameters['RMQ_VHOST']
+    )
     tools.connection.set_listener('MyConsumer', MyListener())
     tools.connection.start()
-    tools.connection.connect('ivukotic', AMQ_PASS, wait=True)
+    tools.connection.connect(RMQ_parameters['RMQ_USER'], RMQ_parameters['RMQ_PASS'], wait=True)
     tools.connection.subscribe(destination=tools.TOPIC, ack='auto', id="1", headers={})
     return
 
@@ -93,7 +98,7 @@ def eventCreator():
         su = m['datapoints']
         for ts, th in su.items():
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = "network_weather-" + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = tools.index_prefix + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             th_fl = dict((float(k), v) for (k, v) in th.items())
 
@@ -136,8 +141,8 @@ def eventCreator():
                 aLotOfData = []
 
 
-AMQ_PASS = tools.get_pass()
-
+RMQ_parameters = tools.get_RMQ_connection_parameters()
+tools.set_index_prefix()
 
 q = queue.Queue()
 # start eventCreator threads
