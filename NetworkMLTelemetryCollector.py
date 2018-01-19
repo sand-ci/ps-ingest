@@ -14,6 +14,7 @@ import tools
 import siteMapping
 
 tools.TOPIC = "/topic/telemetry.perfsonar"
+INDEX_PREFIX = 'perfsonar_utilization-'
 siteMapping.reload()
 
 
@@ -71,7 +72,7 @@ def eventCreator():
         d = q.get()
         m = json.loads(d)
         data = {
-            '_type': 'link_utilization'
+            '_type': 'doc'
         }
 
         source = m['meta']['source']
@@ -100,7 +101,7 @@ def eventCreator():
                 # print(results)
                 for r in results:
                     dati = datetime.utcfromtimestamp(float(r[0]))
-                    data['_index'] = tools.index_prefix + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+                    data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
                     data['timestamp'] = r[0] * 1000
                     data['sim_util'] = r[1]['ml']
             # print(data)

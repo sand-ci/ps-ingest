@@ -15,6 +15,7 @@ import tools
 import siteMapping
 
 tools.TOPIC = "/topic/perfsonar.raw.histogram-owdelay"
+INDEX_PREFIX = 'perfsonar_owd-'
 siteMapping.reload()
 
 
@@ -72,7 +73,7 @@ def eventCreator():
         d = q.get()
         m = json.loads(d)
         data = {
-            '_type': 'latency'
+            '_type': 'doc'
         }
 
         source = m['meta']['source']
@@ -98,7 +99,7 @@ def eventCreator():
         su = m['datapoints']
         for ts, th in su.items():
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = tools.index_prefix + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             th_fl = dict((float(k), v) for (k, v) in th.items())
 

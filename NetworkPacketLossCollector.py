@@ -14,6 +14,7 @@ import tools
 import siteMapping
 
 tools.TOPIC = "/topic/perfsonar.raw.packet-loss-rate"
+INDEX_PREFIX = 'perfsonar_packeloss-'
 siteMapping.reload()
 
 
@@ -72,7 +73,7 @@ def eventCreator():
         m = json.loads(d)
 
         data = {
-            '_type': 'packet_loss_rate'
+            '_type': 'doc'
         }
 
         source = m['meta']['source']
@@ -103,7 +104,7 @@ def eventCreator():
         # print(su)
         for ts, th in su.items():
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = tools.index_prefix + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             data['packet_loss'] = th
             # print(data)

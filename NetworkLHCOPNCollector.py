@@ -14,6 +14,7 @@ import tools
 import siteMapping
 
 tools.TOPIC = "/topic/netflow.lhcopn"
+INDEX_PREFIX = 'perfsonar_lhcopn-'
 siteMapping.reload()
 
 
@@ -71,7 +72,7 @@ def eventCreator():
         d = q.get()
         m = json.loads(d)
         data = {
-            '_type': 'netflow_lhcopn'
+            '_type': 'doc'
         }
         if not 'data'in m:
             print(threading.current_thread().name, 'no data in this message!')
@@ -86,8 +87,7 @@ def eventCreator():
         ts = m['data']['timestamp']
         th = m['data']['throughput']
         dati = datetime.utcfromtimestamp(float(ts))
-        data['_index'] = tools.index_prefix + \
-            str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+        data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
         data['timestamp'] = int(float(ts) * 1000)
         data['utilization'] = int(th)
         # print(data)

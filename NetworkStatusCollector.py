@@ -14,6 +14,8 @@ import tools
 import siteMapping
 
 tools.TOPIC = "/topic/perfsonar.summary.status"
+INDEX_PREFIX = 'perfsonar_status-'
+
 siteMapping.reload()
 
 
@@ -71,7 +73,7 @@ def eventCreator():
         d = q.get()
         m = json.loads(d)
         data = {
-            '_type': 'ps_perf'
+            '_type': 'doc'
         }
 
         metrics = ['perfSONAR services: ntp', 'perfSONAR esmond freshness', 'OSG datastore freshness',
@@ -87,7 +89,7 @@ def eventCreator():
         for k in m['perf_metrics'].keys():
             data[prefix + "_" + k] = m['perf_metrics'][k]
         dati = datetime.utcfromtimestamp(float(m['timestamp']))
-        data['_index'] = tools.index_prefix + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+        data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
         data['timestamp'] = int(float(m['timestamp']) * 1000)
         # print(data)
         aLotOfData.append(copy.copy(data))

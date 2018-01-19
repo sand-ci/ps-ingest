@@ -14,6 +14,7 @@ import tools
 import siteMapping
 
 tools.TOPIC = "/topic/perfsonar.raw.throughput"
+INDEX_PREFIX = 'perfsonar_throughput-'
 siteMapping.reload()
 
 
@@ -72,7 +73,7 @@ def eventCreator():
         m = json.loads(d)
 
         data = {
-            '_type': 'throughput'
+            '_type': 'doc'
         }
         # print(m)
         source = m['meta']['source']
@@ -104,8 +105,7 @@ def eventCreator():
         su = m['datapoints']
         for ts, th in su.items():
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = tools.index_prefix + \
-                str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             data['throughput'] = th
             # print(data)

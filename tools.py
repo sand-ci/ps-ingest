@@ -71,4 +71,3 @@ def get_RMQ_connection_parameters():
 connection = None
 
 TOPIC = 'no topic defined.'
-index_prefix = 'network_weather-'

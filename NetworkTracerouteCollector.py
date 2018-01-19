@@ -14,6 +14,7 @@ import tools
 import siteMapping
 
 tools.TOPIC = "/topic/perfsonar.raw.packet-trace"
+INDEX_PREFIX = 'perfsonar_traceroute-'
 siteMapping.reload()
 
 
@@ -72,7 +73,7 @@ def eventCreator():
         m = json.loads(d)
 
         data = {
-            '_type': 'traceroute'
+            '_type': 'doc'
         }
         # print(m)
         source = m['meta']['source']
@@ -105,8 +106,7 @@ def eventCreator():
         # print(su)
         for ts in dp:
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = tools.index_prefix + \
-                str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             data['hops'] = []
             data['rtts'] = []
