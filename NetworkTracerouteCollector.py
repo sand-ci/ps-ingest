@@ -13,7 +13,7 @@ import stomp
 import tools
 import siteMapping
 
-tools.TOPIC = "/topic/perfsonar.raw.packet-trace"
+TOPIC = "/topic/perfsonar.raw.packet-trace"
 INDEX_PREFIX = 'perfsonar_traceroute-'
 siteMapping.reload()
 
@@ -61,7 +61,7 @@ def connect_to_MQ(reset=False):
     tools.connection.set_listener('MyConsumer', MyListener())
     tools.connection.start()
     tools.connection.connect(RMQ_parameters['RMQ_USER'], RMQ_parameters['RMQ_PASS'], wait=True)
-    tools.connection.subscribe(destination=tools.TOPIC, ack='auto', id=RMQ_parameters['RMQ_ID'], headers={})
+    tools.connection.subscribe(destination=TOPIC, ack='auto', id=RMQ_parameters['RMQ_ID'], headers={})
     return
 
 
@@ -145,7 +145,6 @@ def eventCreator():
 
 
 RMQ_parameters = tools.get_RMQ_connection_parameters()
-tools.set_index_prefix()
 
 q = queue.Queue()
 # start eventCreator threads

@@ -69,5 +69,3 @@ def get_RMQ_connection_parameters():
 
 # MQ connection - here to make it global
 connection = None
-
-TOPIC = 'no topic defined.'
