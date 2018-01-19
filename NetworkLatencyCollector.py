@@ -62,7 +62,7 @@ def connect_to_MQ(reset=False):
     tools.connection.set_listener('MyConsumer', MyListener())
     tools.connection.start()
     tools.connection.connect(RMQ_parameters['RMQ_USER'], RMQ_parameters['RMQ_PASS'], wait=True)
-    tools.connection.subscribe(destination=TOPIC, ack='auto', id=RMQ_parameters['RMQ_ID'], headers={})
+    tools.connection.subscribe(destination=TOPIC, ack='auto', id=RMQ_parameters['RMQ_ID'], headers={"durable": True, "auto-delete": False})
     return
 
 
