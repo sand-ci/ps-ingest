@@ -56,7 +56,7 @@ def bulk_index(data, es_conn=None, thread_name=''):
 
 def get_RMQ_connection_parameters():
     """ read vhost, user, pass from the environment """
-    ret = {'RMQ_VHOST': '', 'RMQ_USER': '', 'RMQ_PASS': ''}
+    ret = {'RMQ_VHOST': '', 'RMQ_USER': '', 'RMQ_PASS': '', 'RMQ_ID': ''}
     for var in ret:
         val = os.environ[var]
         if val:
