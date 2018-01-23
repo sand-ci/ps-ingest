@@ -14,7 +14,7 @@ import tools
 import siteMapping
 
 TOPIC = "/topic/perfsonar.raw.packet-retransmits"
-INDEX_PREFIX = 'perfsonar_retransmits-'
+INDEX_PREFIX = 'ps_retransmits-'
 siteMapping.reload()
 
 
@@ -89,13 +89,13 @@ def eventCreator():
         so = siteMapping.getPS(source)
         de = siteMapping.getPS(destination)
         if so != None:
-            data['srcSite'] = so[0]
-            data['srcVO'] = so[1]
+            data['src_site'] = so[0]
+            data['src_VO'] = so[1]
         if de != None:
-            data['destSite'] = de[0]
-            data['destVO'] = de[1]
-        data['srcProduction'] = siteMapping.isProductionThroughput(source)
-        data['destProduction'] = siteMapping.isProductionThroughput(
+            data['dest_site'] = de[0]
+            data['dest_VO'] = de[1]
+        data['src_production'] = siteMapping.isProductionThroughput(source)
+        data['dest_production'] = siteMapping.isProductionThroughput(
             destination)
         if not 'datapoints'in m:
             print(threading.current_thread().name,
@@ -105,7 +105,7 @@ def eventCreator():
         su = m['datapoints']
         for ts, th in su.items():
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             data['retransmits'] = th
             # print(data)
