@@ -105,7 +105,7 @@ def eventCreator():
         su = m['datapoints']
         for ts, th in su.items():
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             data['throughput'] = th
             # print(data)
