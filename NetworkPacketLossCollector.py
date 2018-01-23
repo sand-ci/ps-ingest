@@ -14,7 +14,7 @@ import tools
 import siteMapping
 
 TOPIC = "/topic/perfsonar.raw.packet-loss-rate"
-INDEX_PREFIX = 'perfsonar_packeloss-'
+INDEX_PREFIX = 'ps_packetloss-'
 siteMapping.reload()
 
 
