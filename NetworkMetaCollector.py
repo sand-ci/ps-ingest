@@ -14,7 +14,7 @@ import tools
 import siteMapping
 
 TOPIC = "/topic/perfsonar.summary.meta"
-INDEX_PREFIX = 'perfsonar_meta-'
+INDEX_PREFIX = 'ps_meta-'
 siteMapping.reload()
 
 
@@ -112,7 +112,7 @@ def eventCreator():
         data = {'_type': 'doc'}
 
         dati = datetime.utcfromtimestamp(float(m['timestamp']))
-        data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+        data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
         data.update(m)
         data.pop('interfaces', None)
         data['timestamp'] = int(float(m['timestamp']) * 1000)
