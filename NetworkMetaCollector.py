@@ -11,11 +11,9 @@ from datetime import datetime
 
 import stomp
 import tools
-import siteMapping
 
 TOPIC = "/topic/perfsonar.summary.meta"
 INDEX_PREFIX = 'ps_meta-'
-siteMapping.reload()
 
 
 class MyListener(object):

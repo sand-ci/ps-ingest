@@ -11,7 +11,6 @@ from datetime import datetime
 
 import stomp
 import tools
-import siteMapping
 
 TOPIC = "/topic/netflow.lhcopn"
 INDEX_PREFIX = 'ps_lhcopn-'
