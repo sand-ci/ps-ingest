@@ -89,13 +89,13 @@ def eventCreator():
         so = siteMapping.getPS(source)
         de = siteMapping.getPS(destination)
         if so is not None:
-            data['srcSite'] = so[0]
-            data['srcVO'] = so[1]
+            data['src_site'] = so[0]
+            data['src_VO'] = so[1]
         if de is not None:
-            data['destSite'] = de[0]
-            data['destVO'] = de[1]
-        data['srcProduction'] = siteMapping.isProductionLatency(source)
-        data['destProduction'] = siteMapping.isProductionLatency(destination)
+            data['dest_site'] = de[0]
+            data['dest_VO'] = de[1]
+        data['src_production'] = siteMapping.isProductionLatency(source)
+        data['dest_production'] = siteMapping.isProductionLatency(destination)
         if 'datapoints' not in m:
             q.task_done()
             print(threading.current_thread().name, "no datapoints found in the message")
