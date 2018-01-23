@@ -14,8 +14,7 @@ import tools
 import siteMapping
 
 TOPIC = "/topic/netflow.lhcopn"
-INDEX_PREFIX = 'perfsonar_lhcopn-'
-siteMapping.reload()
+INDEX_PREFIX = 'ps_lhcopn-'
 
 
 class MyListener(object):
@@ -82,12 +81,12 @@ def eventCreator():
         source = m['data']['src_site']
         destination = m['data']['dst_site']
         data['MA'] = 'capc.cern'
-        data['srcInterface'] = source
-        data['dstInterface'] = destination
+        data['src_interface'] = source
+        data['dest_interface'] = destination
         ts = m['data']['timestamp']
         th = m['data']['throughput']
         dati = datetime.utcfromtimestamp(float(ts))
-        data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+        data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
         data['timestamp'] = int(float(ts) * 1000)
         data['utilization'] = int(th)
         # print(data)
