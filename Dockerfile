@@ -64,4 +64,4 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # build info
 RUN echo "Timestamp:" `date --utc` | tee /image-build-info.txt
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf", "-n"]
