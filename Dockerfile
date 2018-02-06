@@ -60,6 +60,7 @@ ADD NetworkStatusCollector.py /.
 # setup supervisord
 RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY supervisord.cern.conf /etc/supervisor/conf.d/supervisord.cern.conf
 
 # build info
 RUN echo "Timestamp:" `date --utc` | tee /image-build-info.txt

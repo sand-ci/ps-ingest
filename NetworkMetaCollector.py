@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# TO BE RUN ONLY AT CERN
+
 import queue
 import socket
 import time
