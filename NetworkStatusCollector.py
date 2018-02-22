@@ -16,7 +16,7 @@ import tools
 import siteMapping
 
 TOPIC = "/topic/perfsonar.summary.status"
-INDEX_PREFIX = 'perfsonar_status-'
+INDEX_PREFIX = 'ps_status-'
 
 siteMapping.reload()
 
@@ -91,7 +91,7 @@ def eventCreator():
         for k in m['perf_metrics'].keys():
             data[prefix + "_" + k] = m['perf_metrics'][k]
         dati = datetime.utcfromtimestamp(float(m['timestamp']))
-        data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+        data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month)
         data['timestamp'] = int(float(m['timestamp']) * 1000)
         # print(data)
         aLotOfData.append(copy.copy(data))

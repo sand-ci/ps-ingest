@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# TO BE RUN ONLY AT CERN
+# NOT USED ANYMORE
 
 import queue
 import socket
