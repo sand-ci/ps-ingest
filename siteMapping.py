@@ -29,9 +29,9 @@ class ps:
 
 
 def getIP(host):
-    ip = 'unknown'
+    ip = None
     try:
-        ip = socket.gethostbyname(host)
+        ip = socket.getaddrinfo(host, 80, 0, 0, socket.IPPROTO_TCP)
     except:
         print("Could not get ip for", host)
     return ip
@@ -65,15 +65,19 @@ def reload():
         for s in res:
             p = ps()
             p.hostname = s['endpoint']
-            p.ip = getIP(p.hostname)
             if s['status'] == 'production':
                 p.production = True
             p.flavor = s['flavour']
             p.sitename = s['rc_site']
             if p.sitename in sites:
                 p.VO = "ATLAS"
+            ips = getIP(p.hostname)
+            if not ips:
+                continue
+            p.ip = [i[4][0] for i in ips]
+            for ip in ips:
+                PerfSonars[ip[4][0]] = p
             sites.append(s["rc_site"])
-            PerfSonars[p.ip] = p
             p.prnt()
         print('Perfsonars reloaded.')
     except:
@@ -114,12 +118,13 @@ def reload():
                                 types.append('bwctl')
                         for a in h['addresses']:
                             print(a)
-                            ip = getIP(a)
-                            if ip != 'unknown':
-                                if 'bwctl' in types:
-                                    throughputHosts.append(ip)
-                                if 'owamp' in types:
-                                    latencyHosts.append(ip)
+                            ips = getIP(a)
+                            if ips and 'bwctl' in types:
+                                for ip in ips:
+                                    throughputHosts.append(ip[0][4])
+                            if ips and 'owamp' in types:
+                                for ip in ips:
+                                    latencyHosts.append(ip[0][4])
         except:
             print("Could not load mesh,", m, " Exiting...")
             print("Unexpected error: ", str(sys.exc_info()[0]))
