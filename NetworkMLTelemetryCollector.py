@@ -105,6 +105,7 @@ def eventCreator():
                     dati = datetime.utcfromtimestamp(float(r[0]))
                     data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
                     data['timestamp'] = r[0] * 1000
+                    data['_id'] = hash((m['meta']['org_metadata_key'], data['timestamp']))
                     data['sim_util'] = r[1]['ml']
             # print(data)
             aLotOfData.append(copy.copy(data))

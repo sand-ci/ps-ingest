@@ -116,6 +116,7 @@ def eventCreator():
         data.update(m)
         data.pop('interfaces', None)
         data['timestamp'] = int(float(m['timestamp']) * 1000)
+        data['_id'] = hash((m['meta']['org_metadata_key'], data['timestamp']))
         data['host'] = data.get('external_address', {}).get('dns_name')
 
         if "services" in data:
