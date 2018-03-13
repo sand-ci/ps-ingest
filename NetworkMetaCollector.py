@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys
+import os
 import queue
 import socket
 import time
@@ -24,7 +24,7 @@ class MyListener(object):
 
     def on_error(self, headers, message):
         print('received an error %s' % message)
-        sys.exit(1)
+        os._exit(1)
 
     def on_heartbeat_timeout(self):
         print('AMQ - lost heartbeat. Needs a reconnect!')

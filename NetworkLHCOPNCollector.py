@@ -2,6 +2,7 @@
 
 # TO BE RUN ONLY AT CERN
 
+import os
 import queue
 import socket
 import time
@@ -25,6 +26,7 @@ class MyListener(object):
 
     def on_error(self, headers, message):
         print('received an error %s' % message)
+        os._exit(1)
 
     def on_heartbeat_timeout(self):
         print('AMQ - lost heartbeat. Needs a reconnect!')
