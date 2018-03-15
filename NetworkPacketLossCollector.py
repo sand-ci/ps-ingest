@@ -118,6 +118,10 @@ def eventCreator():
             succ = tools.bulk_index(aLotOfData, es_conn=es_conn, thread_name=threading.current_thread().name)
             if succ is True:
                 aLotOfData = []
+                
+        if len(aLotOfData) > 10000:
+            print('too many entries in memory. sleep for a minute.')
+            time.sleep(60)
 
 
 RMQ_parameters = tools.get_RMQ_connection_parameters()

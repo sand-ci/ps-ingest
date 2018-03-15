@@ -170,6 +170,10 @@ def eventCreator():
                 aLotOfData = []
             else:
                 print(aLotOfData)
+                
+        if len(aLotOfData) > 10000:
+            print('too many entries in memory. sleep for a minute.')
+            time.sleep(60)
 
 
 RMQ_parameters = tools.get_RMQ_connection_parameters()
