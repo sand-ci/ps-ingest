@@ -77,15 +77,21 @@ def eventCreator():
         data = {
             '_type': 'doc'
         }
-
         metrics = ['perfSONAR services: ntp', 'perfSONAR esmond freshness', 'OSG datastore freshness',
                    'perfSONAR services: pscheduler']
-        if not any(pattern in m['metric'] for pattern in metrics):
+        found=False
+        for met in metrics:
+            if not met in m['metric']: 
+                continue
+            found=True
+        if not found:
             q.task_done()
             continue
+        
         if 'perf_metrics' in m.keys() and not m['perf_metrics']:
             q.task_done()
             continue
+
         data['host'] = m['host']
         prefix = m['metric'].replace("perfSONAR", "ps").replace(":", "").replace(" ", "_").lower()
         for k in m['perf_metrics'].keys():
