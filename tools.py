@@ -40,7 +40,7 @@ def bulk_index(data, es_conn=None, thread_name=''):
     if es_conn is None:
         es_conn = get_es_connection()
     try:
-        res = helpers.bulk(es_conn, data, raise_on_exception=True, request_timeout=60)
+        res = helpers.bulk(es_conn, data, raise_on_exception=True, request_timeout=120)
         print(thread_name, "inserted:", res[0], 'errors:', res[1])
         success = True
     except es_exceptions.ConnectionError as error:
