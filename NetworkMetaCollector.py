@@ -93,11 +93,11 @@ def convert_to_int(d, tags):
 
 
 def isfloat(value):
-  try:
-    float(value)
-    return True
-  except ValueError:
-    return False
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
 
 
 def clean(data):
