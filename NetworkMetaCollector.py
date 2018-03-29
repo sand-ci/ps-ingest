@@ -92,6 +92,14 @@ def convert_to_int(d, tags):
             d[t] = None
 
 
+def isfloat(value):
+  try:
+    float(value)
+    return True
+  except ValueError:
+    return False
+
+
 def clean(data):
     toDel = []
     for tag in data.keys():
@@ -141,8 +149,9 @@ def eventCreator():
         if 'location' in data.keys():
             lat = data['location'].get('latitude', 0)
             lgt = data['location'].get('longitude', 0)
-            if lat and lgt:
-                data['geolocation'] = "%s,%s" % (lat, lgt)
+            if lat and lgt and isinstance(lat, str) and isinstance(lgt, str):
+                if isfloat(lat) and isfloat(lgt):
+                    data['geolocation'] = "%s,%s" % (lat, lgt)
             del data['location']
 
         if 'ntp' in data.keys():
