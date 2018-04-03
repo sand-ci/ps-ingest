@@ -189,7 +189,9 @@ def eventCreator():
             if succ is True:
                 aLotOfData = []
             else:
+                print("There is amn issue with indexing some documents:")
                 print(aLotOfData)
+                aLotOfData = []
                 
         if len(aLotOfData) > 10000:
             print('too many entries in memory. sleep for a minute.')
@@ -208,5 +210,5 @@ for i in range(1):
 
 while True:
     connect_to_MQ()
-    time.sleep(55)
+    time.sleep(119)
     print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "qsize:", q.qsize())
