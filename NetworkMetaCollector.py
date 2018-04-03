@@ -92,6 +92,15 @@ def convert_to_int(d, tags):
             d[t] = None
 
 
+def fix_enabled(services):
+    for d in services:
+        for k, v in d.items():
+            if k == "enabled" and v in ["1", "true", "True"]:
+                d[k] = 1
+            if k == "enabled" and v in ["0", "false", "False"]:
+                d[k] = 0
+
+
 def isfloat(value):
     try:
         float(value)
@@ -126,6 +135,8 @@ def eventCreator():
         data['timestamp'] = int(float(m['timestamp']) * 1000)
         data['host'] = data.get('external_address', {}).get('dns_name')
 
+        if 'services' in data.keys():
+            fix_enabled(data['services'])
         if "services" in data:
             sers = copy.deepcopy(data["services"])
             data["services"] = {}
