@@ -22,14 +22,8 @@ PerfSonars = {}
 throughputHosts = []
 latencyHosts = []
 
-GOCDB_FEED = "https://goc.egi.eu/gocdbpi/private/?method=get_service_endpoint"
-OIM_FEED = "http://myosg.grid.iu.edu/rgsummary/xml?summary_attrs_showservice=on&summary_attrs_showfqdn=on&" + \
-           "gip_status_attrs_showtestresults=on&downtime_attrs_showpast=&account_type=cumulative_hours&" + \
-           "ce_account_type=gip_vo&se_account_type=vo_transfer_volume&bdiitree_type=total_jobs&" + \
-           "bdii_object=service&bdii_server=is-osg&start_type=7daysago&start_date=11%2F17%2F2014&" + \
-           "end_type=now&end_date=11%2F17%2F2014&all_resources=on&facility_sel%5B%5D=10009&gridtype=on&" + \
-           "gridtype_1=on&active=on&active_value=1&disable_value=0"
-
+GOCDB_FEED = "https://goc.egi.eu/gocdbpi/public/?method=get_service_endpoint"
+OIM_FEED = "https://my.opensciencegrid.org/rgsummary/xml?summary_attrs_showservice=on&summary_attrs_showfqdn=on&gip_status_attrs_showtestresults=on&downtime_attrs_showpast=&account_type=cumulative_hours&ce_account_type=gip_vo&se_account_type=vo_transfer_volume&bdiitree_type=total_jobs&bdii_object=service&bdii_server=is-osg&start_type=7daysago&start_date=11%2F17%2F2014&end_type=now&all_resources=on&facility_sel%5B%5D=10009&gridtype=on&gridtype_1=on&active=on&active_value=1&disable_value=0"
 
 class ps:
     hostname = ''
@@ -39,14 +33,14 @@ class ps:
     flavor = ''
 
     def prnt(self):
-        print('ip:', self.ip, '\thost:', self.hostname, '\tVO:', self.VO, '\tflavor:', self.flavor)
+        print('ip:', self.ip, '\thost:', self.hostname, '\tVO:', self.VO, '\tflavor:', self.flavor, '\tsite:', self.sitename)
 
 
-def request(url, hostcert=None, hostkey=None):
+def request(url, hostcert=None, hostkey=None, verify=False):
     if hostcert and hostkey:
-        req = requests.get(url, verify=False, timeout=120, cert=(hostcert, hostkey))
+        req = requests.get(url, verify=verify, timeout=120, cert=(hostcert, hostkey))
     else:
-        req = requests.get(url, timeout=120)
+        req = requests.get(url, timeout=120, verify=verify)
     req.raise_for_status()
     return req.content
 
@@ -146,42 +140,39 @@ def reload():
         print("Unexpected error: ", str(sys.exc_info()[0]))
 
     # gocdb/oim processing =============================
-    # needs valid grid certificate exported via env in HOSTKEY/HOSTCERT
 
-    if 'HOSTKEY' in os.environ and 'HOSTCERT' in os.environ:
-        try:
-            print("Retrieving GOCDB sonars ...")
-            sonars = list(get_gocdb_sonars(request(GOCDB_FEED,
-                                                   os.environ['HOSTCERT'], os.environ['HOSTKEY'])))
-            print("Retrieving OIM sonars ...")
-            oim_sonars = list(get_oim_sonars(request(OIM_FEED)))
-            sonars.extend(oim_sonars)
+    try:
+        print("Retrieving GOCDB sonars ...")
+        sonars = list(get_gocdb_sonars(request(GOCDB_FEED, verify=False)))
+        print("Retrieving OIM sonars ...")
+        oim_sonars = list(get_oim_sonars(request(OIM_FEED)))
+        sonars.extend(oim_sonars)
 
-            for host, stype, site in sonars:
-                ips = getIP(host)
-                if not ips:
-                    continue
-                if ips[0][4][0] in PerfSonars.keys():
-                    continue
-                p = ps()
-                p.hostname = host
-                p.production = False
-                p.VO = "UNKNOWN"
-                p.flavor = stype
-                p.sitename = site
-                p.ip = [i[4][0] for i in ips]
-                p.prnt()
-                for ip in ips:
-                    PerfSonars[ip[4][0]] = p
-            print('Done')
-        except:
-            print("Could not get perfSONARs from GOCDB/OIM ...")
-            print("Unexpected error: ", str(sys.exc_info()[0]))
+        for host, stype, site in sonars:
+            ips = getIP(host)
+            if not ips:
+                continue
+            if ips[0][4][0] in PerfSonars.keys():
+                continue
+            p = ps()
+            p.hostname = host
+            p.production = False
+            p.VO = "UNKNOWN"
+            p.flavor = stype
+            p.sitename = site
+            p.ip = [i[4][0] for i in ips]
+            p.prnt()
+            for ip in ips:
+                PerfSonars[ip[4][0]] = p
+        print('Done')
+    except:
+        print("Could not get perfSONARs from GOCDB/OIM ...")
+        print("Unexpected error: ", str(sys.exc_info()[0]))
 
     # loading meshes ===================================
 
     try:
-        r = requests.get('http://meshconfig.grid.iu.edu/pub/config/')
+        r = requests.get('http://psconfig.opensciencegrid.org/pub/config/', verify=False)
         res = r.json()
         for r in res:
             inc = r['include'][0]
