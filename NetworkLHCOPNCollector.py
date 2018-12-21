@@ -101,7 +101,7 @@ def eventCreator():
             succ = tools.bulk_index(aLotOfData, es_conn=es_conn, thread_name=threading.current_thread().name)
             if succ is True:
                 aLotOfData = []
-                
+
         if len(aLotOfData) > 10000:
             print('too many entries in memory. sleep for a minute.')
             time.sleep(60)
@@ -121,4 +121,4 @@ for i in range(1):
 while True:
     connect_to_MQ()
     time.sleep(55)
-    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "qsize:", q.qsize())
+    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "threads:", threading.active_count(), "qsize:", q.qsize())

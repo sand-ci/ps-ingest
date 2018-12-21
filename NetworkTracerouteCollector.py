@@ -164,4 +164,4 @@ for i in range(1):
 while True:
     connect_to_MQ()
     time.sleep(55)
-    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "qsize:", q.qsize())
+    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "threads:", threading.active_count(), "qsize:", q.qsize())
