@@ -8,6 +8,7 @@ from datetime import datetime
 import threading
 
 import collector
+import siteMapping
 
 
 class NetworkTracerouteCollector(collector.Collector):
@@ -57,7 +58,7 @@ class NetworkTracerouteCollector(collector.Collector):
         # print(su)
         for ts in dp:
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = self.es_index_prefix + INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             data['_id'] = hash((m['meta']['org_metadata_key'], data['timestamp']))
             data['hops'] = []

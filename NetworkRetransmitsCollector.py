@@ -21,8 +21,7 @@ class NetworkRetransmitsCollector(collector.Collector):
     def __init__(self):
         self.TOPIC = "/topic/perfsonar.raw.packet-retransmits"
         self.INDEX_PREFIX = 'ps_retransmits-'
-
-
+        super(NetworkRetransmitsCollector, self).__init__()
 
     def eventCreator(self, message):
     
@@ -60,12 +59,12 @@ class NetworkRetransmitsCollector(collector.Collector):
         su = m['datapoints']
         for ts, th in su.items():
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
+            data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             data['_id'] = hash((m['meta']['org_metadata_key'], data['timestamp']))
             data['retransmits'] = th
             # print(data)
-            aLotOfData.append(copy.copy(data))
+            self.aLotOfData.append(copy.copy(data))
 
 
 

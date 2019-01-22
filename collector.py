@@ -49,8 +49,9 @@ class Collector(object):
         self.RMQ_parameters = self.get_RMQ_connection_parameters()
 
         self.es_index_prefix = os.environ.get("ES_INDEX_PREFIX", "")
-        self.aLotOfData = None
+        self.aLotOfData = []
         self.last_flush = time.time()
+        self.es_conn = None
 
     def start(self):
         # start eventCreator threads
@@ -105,7 +106,7 @@ class Collector(object):
         if len(self.aLotOfData) > 100 or (time.time() - self.last_flush) > 10:
             success = False
             while not success:
-                success = self.bulk_index(self.aLotOfData, es_conn=es_conn, thread_name=threading.current_thread().name)
+                success = self.bulk_index(self.aLotOfData, es_conn=None, thread_name=threading.current_thread().name)
                 if success is True:
                     self.aLotOfData = []
                     self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
@@ -169,7 +170,7 @@ class Collector(object):
             except:
                 print('Something seriously wrong happened in getting ES connection.')
             else:
-                return es_conn
+                return self.es_conn
             time.sleep(70)
 
 
@@ -180,7 +181,7 @@ class Collector(object):
         """
         success = False
         if self.es_conn is None:
-            self.es_conn = get_es_connection()
+            self.es_conn = self.get_es_connection()
         try:
             res = helpers.bulk(es_conn, data, raise_on_exception=True, request_timeout=120)
             print(thread_name, "inserted:", res[0], 'errors:', res[1])

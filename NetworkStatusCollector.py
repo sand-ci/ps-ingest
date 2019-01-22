@@ -19,8 +19,8 @@ import collector
 class NetworkStatusCollector(collector.Collector):
     
     def __init__(self):
-        TOPIC = "/topic/perfsonar.summary.status"
-        INDEX_PREFIX = 'ps_status-'
+        self.TOPIC = "/topic/perfsonar.summary.status"
+        self.INDEX_PREFIX = 'ps_status-'
         return super(NetworkStatusCollector, self).__init__()
 
     def eventCreator(self, message):
@@ -47,7 +47,7 @@ class NetworkStatusCollector(collector.Collector):
         for k in m['perf_metrics'].keys():
             data[prefix + "_" + k] = m['perf_metrics'][k]
         dati = datetime.utcfromtimestamp(float(m['timestamp']))
-        data['_index'] = self.es_index_prefix + INDEX_PREFIX + str(dati.year) + "." + str(dati.month)
+        data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month)
         data['timestamp'] = int(float(m['timestamp']) * 1000)
         # print(data)
         self.aLotOfData.append(copy.copy(data))
