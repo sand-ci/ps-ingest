@@ -83,12 +83,8 @@ class Collector(object):
             except Exception as e:
                 # Failed to create the event
                 traceback.print_exc()
-                # Flush the current data
-                self.flushData()
-                # Send a nack on the current headers
-                self.connection.nack(headers['message-id'], self.RMQ_parameters['RMQ_ID'])
-                continue
-
+                print("Failed to parse data:")
+                print(str(msg))
 
             # Set the last successful headers
             self.last_headers = headers
@@ -147,8 +143,8 @@ class Collector(object):
         )
         self.connection.set_listener('MyConsumer', Collector.MyListener(self.q, self))
         self.connection.start()
-        self.connection.connect(self.RMQ_parameters['RMQ_USER'], self.RMQ_parameters['RMQ_PASS'], wait=True)
-        self.connection.subscribe(destination=self.TOPIC, ack='client', id=self.RMQ_parameters['RMQ_ID'], headers={"durable": True, "auto-delete": False})
+        self.connection.connect(self.RMQ_parameters['RMQ_USER'], self.RMQ_parameters['RMQ_PASS'], wait=True, heartbeats=(10000, 10000))
+        self.connection.subscribe(destination=self.TOPIC, ack='client', id=self.RMQ_parameters['RMQ_ID'], headers={"durable": True, "auto-delete": False, 'prefetch-count': 256})
 
     def get_es_connection(self):
         """
@@ -183,7 +179,7 @@ class Collector(object):
         if self.es_conn is None:
             self.es_conn = self.get_es_connection()
         try:
-            res = helpers.bulk(es_conn, data, raise_on_exception=True, request_timeout=120)
+            res = helpers.bulk(self.es_conn, data, raise_on_exception=True, request_timeout=120)
             print(thread_name, "inserted:", res[0], 'errors:', res[1])
             success = True
         except es_exceptions.ConnectionError as error:
