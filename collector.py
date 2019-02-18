@@ -52,6 +52,7 @@ class Collector(object):
         self.aLotOfData = []
         self.last_flush = time.time()
         self.es_conn = None
+        self.msg_counter = 0
 
     def start(self):
         # start eventCreator threads
@@ -73,6 +74,7 @@ class Collector(object):
         while True:
             try:
                 (msg, headers) = self.q.get(timeout=10)
+                self.msg_counter += 1
             except queue.Empty as qe:
                 # Try to flush the data
                 self.flushData()
@@ -107,6 +109,7 @@ class Collector(object):
                     self.aLotOfData = []
                     self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
                     self.last_flush = time.time()
+                    self.msg_counter = 0
                     break
                 else:
                     print("Unable to post to ES")
@@ -144,7 +147,7 @@ class Collector(object):
         self.connection.set_listener('MyConsumer', Collector.MyListener(self.q, self))
         self.connection.start()
         self.connection.connect(self.RMQ_parameters['RMQ_USER'], self.RMQ_parameters['RMQ_PASS'], wait=True, heartbeats=(10000, 10000))
-        self.connection.subscribe(destination=self.TOPIC, ack='client', id=self.RMQ_parameters['RMQ_ID'], headers={"durable": True, "auto-delete": False, 'prefetch-count': 256})
+        self.connection.subscribe(destination=self.TOPIC, ack='client', id=self.RMQ_parameters['RMQ_ID'], headers={"durable": True, "auto-delete": False, 'prefetch-count': 1024})
 
     def get_es_connection(self):
         """
