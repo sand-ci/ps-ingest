@@ -70,7 +70,7 @@ class NetworkThroughputCollector(collector.Collector):
             data['_id'] = hash((m['meta']['org_metadata_key'], data['timestamp']))
             data['throughput'] = th
             # print(data)
-            aLotOfData.append(copy.copy(data))
+            self.aLotOfData.append(copy.copy(data))
 
 
 

@@ -43,7 +43,7 @@ class NetworkLHCOPNCollector(collector.Collector):
         ts = m['data']['timestamp']
         th = m['data']['throughput']
         dati = datetime.utcfromtimestamp(float(ts))
-        data['_index'] = INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
+        data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
         data['timestamp'] = int(float(ts) * 1000)
         data['_id'] = hash((m['meta']['org_metadata_key'], data['timestamp']))
         data['utilization'] = int(th)

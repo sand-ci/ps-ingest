@@ -22,6 +22,7 @@ class NetworkPacketLossCollector(collector.Collector):
 
         self.TOPIC = "/topic/perfsonar.raw.packet-loss-rate"
         self.INDEX_PREFIX = 'ps_packetloss-'
+        super(NetworkPacketLossCollector, self).__init__()
 
 
     def eventCreator(self, message):
@@ -58,12 +59,12 @@ class NetworkPacketLossCollector(collector.Collector):
         # print(su)
         for ts, th in su.items():
             dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = self.es_index_prefix + INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
             data['timestamp'] = int(float(ts) * 1000)
             data['_id'] = hash((m['meta']['org_metadata_key'], data['timestamp']))
             data['packet_loss'] = th
             # print(data)
-            aLotOfData.append(copy.copy(data))
+            self.aLotOfData.append(copy.copy(data))
 
 
 def main():

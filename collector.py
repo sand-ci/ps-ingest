@@ -49,8 +49,10 @@ class Collector(object):
         self.RMQ_parameters = self.get_RMQ_connection_parameters()
 
         self.es_index_prefix = os.environ.get("ES_INDEX_PREFIX", "")
-        self.aLotOfData = None
+        self.aLotOfData = []
         self.last_flush = time.time()
+        self.es_conn = None
+        self.msg_counter = 0
 
     def start(self):
         # start eventCreator threads
@@ -72,6 +74,7 @@ class Collector(object):
         while True:
             try:
                 (msg, headers) = self.q.get(timeout=10)
+                self.msg_counter += 1
             except queue.Empty as qe:
                 # Try to flush the data
                 self.flushData()
@@ -82,12 +85,8 @@ class Collector(object):
             except Exception as e:
                 # Failed to create the event
                 traceback.print_exc()
-                # Flush the current data
-                self.flushData()
-                # Send a nack on the current headers
-                self.connection.nack(headers['message-id'], self.RMQ_parameters['RMQ_ID'])
-                continue
-
+                print("Failed to parse data:")
+                print(str(msg))
 
             # Set the last successful headers
             self.last_headers = headers
@@ -105,11 +104,12 @@ class Collector(object):
         if len(self.aLotOfData) > 100 or (time.time() - self.last_flush) > 10:
             success = False
             while not success:
-                success = self.bulk_index(self.aLotOfData, es_conn=es_conn, thread_name=threading.current_thread().name)
+                success = self.bulk_index(self.aLotOfData, es_conn=None, thread_name=threading.current_thread().name)
                 if success is True:
                     self.aLotOfData = []
                     self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
                     self.last_flush = time.time()
+                    self.msg_counter = 0
                     break
                 else:
                     print("Unable to post to ES")
@@ -146,8 +146,8 @@ class Collector(object):
         )
         self.connection.set_listener('MyConsumer', Collector.MyListener(self.q, self))
         self.connection.start()
-        self.connection.connect(self.RMQ_parameters['RMQ_USER'], self.RMQ_parameters['RMQ_PASS'], wait=True)
-        self.connection.subscribe(destination=self.TOPIC, ack='client', id=self.RMQ_parameters['RMQ_ID'], headers={"durable": True, "auto-delete": False})
+        self.connection.connect(self.RMQ_parameters['RMQ_USER'], self.RMQ_parameters['RMQ_PASS'], wait=True, heartbeats=(10000, 10000))
+        self.connection.subscribe(destination=self.TOPIC, ack='client', id=self.RMQ_parameters['RMQ_ID'], headers={"durable": True, "auto-delete": False, 'prefetch-count': 1024})
 
     def get_es_connection(self):
         """
@@ -169,7 +169,7 @@ class Collector(object):
             except:
                 print('Something seriously wrong happened in getting ES connection.')
             else:
-                return es_conn
+                return self.es_conn
             time.sleep(70)
 
 
@@ -180,9 +180,9 @@ class Collector(object):
         """
         success = False
         if self.es_conn is None:
-            self.es_conn = get_es_connection()
+            self.es_conn = self.get_es_connection()
         try:
-            res = helpers.bulk(es_conn, data, raise_on_exception=True, request_timeout=120)
+            res = helpers.bulk(self.es_conn, data, raise_on_exception=True, request_timeout=120)
             print(thread_name, "inserted:", res[0], 'errors:', res[1])
             success = True
         except es_exceptions.ConnectionError as error:
