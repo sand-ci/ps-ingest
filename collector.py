@@ -117,7 +117,6 @@ class Collector(object):
                     if self.last_headers:
                         self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
                         self.last_headers = None
-                    self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
                     self.last_flush = time.time()
                     self.msg_counter = 0
                     break
