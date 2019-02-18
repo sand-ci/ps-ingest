@@ -33,7 +33,7 @@ class NetworkStatusCollector(collector.Collector):
         found = False
         for met in metrics:
             if not met in m['metric']:
-                return
+                continue
             found = True
         if not found:
             return
