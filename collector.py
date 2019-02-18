@@ -51,6 +51,7 @@ class Collector(object):
         self.es_index_prefix = os.environ.get("ES_INDEX_PREFIX", "")
         self.aLotOfData = []
         self.last_flush = time.time()
+        self.last_headers = None
         self.es_conn = None
         self.msg_counter = 0
 
@@ -100,7 +101,9 @@ class Collector(object):
         """
         if self.aLotOfData is None or len(self.aLotOfData) == 0:
             if self.msg_counter > 100 or (time.time() - self.last_flush) > 10:
-                self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
+                if self.last_headers:
+                    self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
+                    self.last_headers = None
                 self.last_flush = time.time()
                 self.msg_counter = 0
             return
@@ -111,6 +114,9 @@ class Collector(object):
                 success = self.bulk_index(self.aLotOfData, es_conn=None, thread_name=threading.current_thread().name)
                 if success is True:
                     self.aLotOfData = []
+                    if self.last_headers:
+                        self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
+                        self.last_headers = None
                     self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
                     self.last_flush = time.time()
                     self.msg_counter = 0
