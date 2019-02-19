@@ -82,7 +82,7 @@ class NetworkMetaCollector(collector.Collector):
         data = {'_type': 'doc'}
 
         dati = datetime.utcfromtimestamp(float(m['timestamp']))
-        data['_index'] = self.es_index_prefix + INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
+        data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
         data.update(m)
         data.pop('interfaces', None)
         data['timestamp'] = int(float(m['timestamp']) * 1000)
