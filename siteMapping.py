@@ -210,6 +210,9 @@ def reload():
                 for s in o['sites']:
                     for h in s['hosts']:
                         types = []
+                        if 'measurement_archives' not in h.keys():
+                            print("No measurement archive defined for ", h)
+                            continue
                         for ma in h['measurement_archives']:
                             if ma['type'].count('owamp') > 0:
                                 types.append('owamp')
@@ -257,3 +260,5 @@ def isProductionThroughput(ip):
         return True
     return False
 
+if __name__ == '__main__':
+    reload()
