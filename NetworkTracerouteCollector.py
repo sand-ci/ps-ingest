@@ -80,6 +80,8 @@ class NetworkTracerouteCollector(collector.Collector):
                     data['rtts'].append(0.0)
                 if 'as' in hop:
                     data['asns'].append(hop['as']['number'])
+                else:
+                    data['asns'].append(0)
                 # print(data)
             hs = ''
             for h in data['hops']:
