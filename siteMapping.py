@@ -5,7 +5,7 @@ import socket
 import time
 import requests
 import xml.etree.ElementTree as ET
-import os
+import ipaddress
 
 # suppress InsecureRequestWarning: Unverified HTTPS request is being made.
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -131,7 +131,14 @@ def reload():
                 continue
             p.ip = [i[4][0] for i in ips]
             for ip in ips:
-                PerfSonars[ip[4][0]] = p
+                if ':' in ip[4][0]:
+                    try:
+                        PerfSonars[ipaddress.IPv6Address(ip[4][0]).exploded] = p
+                    except ipaddress.AddressValueError:
+                        print('Failed to parse IPv6 address:', ip)
+                        continue
+                else:
+                    PerfSonars[ip[4][0]] = p
             sites.append(s["rc_site"])
             p.prnt()
         print('Perfsonars reloaded.')
@@ -163,7 +170,14 @@ def reload():
             p.ip = [i[4][0] for i in ips]
             p.prnt()
             for ip in ips:
-                PerfSonars[ip[4][0]] = p
+                if ':' in ip[4][0]:
+                    try:
+                        PerfSonars[ipaddress.IPv6Address(ip[4][0]).exploded] = p
+                    except ipaddress.AddressValueError:
+                        print('Failed to parse IPv6 address:', ip)
+                        continue
+                else:
+                    PerfSonars[ip[4][0]] = p
         print('Done')
     except:
         print("Could not get perfSONARs from GOCDB/OIM ...")
@@ -196,6 +210,9 @@ def reload():
                 for s in o['sites']:
                     for h in s['hosts']:
                         types = []
+                        if 'measurement_archives' not in h.keys():
+                            print("No measurement archive defined for ", h)
+                            continue
                         for ma in h['measurement_archives']:
                             if ma['type'].count('owamp') > 0:
                                 types.append('owamp')
@@ -226,6 +243,8 @@ def getPS(ip):
     if (time.time() - ot) > 86400:
         print(ot)
         reload()
+    if ':' in ip:
+        ip = ipaddress.IPv6Address(ip).exploded
     if ip in PerfSonars:
         return [PerfSonars[ip].sitename, PerfSonars[ip].VO]
 
