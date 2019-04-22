@@ -62,6 +62,7 @@ class NetworkTracerouteCollector(collector.Collector):
             data['timestamp'] = int(float(ts) * 1000)
             data['_id'] = hash((m['meta']['org_metadata_key'], data['timestamp']))
             data['hops'] = []
+            data['asns'] = []
             data['rtts'] = []
             data['ttls'] = []
             hops = dp[ts]
@@ -77,6 +78,8 @@ class NetworkTracerouteCollector(collector.Collector):
                     data['rtts'].append(float(hop['rtt']))
                 else:
                     data['rtts'].append(0.0)
+                if 'as' in hop:
+                    data['asns'].append(hop['as']['number'])
                 # print(data)
             hs = ''
             for h in data['hops']:
