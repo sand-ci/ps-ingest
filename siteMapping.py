@@ -186,7 +186,7 @@ def reload():
     # loading meshes ===================================
 
     try:
-        r = requests.get('http://psconfig.opensciencegrid.org/pub/config/', verify=False)
+        r = requests.get('http://psconfig.opensciencegrid.org/pub/config/', verify=False, timeout=10)
         res = r.json()
         for r in res:
             inc = r['include'][0]
@@ -201,10 +201,13 @@ def reload():
 
     throughputHosts = []
     latencyHosts = []
+    params = {
+        "format": "meshconfig"
+    }
     for m in meshes:
         print('Loading mesh:', m)
         try:
-            r = requests.get(m, verify=False)
+            r = requests.get(m, verify=False, params=params, timeout=10)
             res = r.json()
             for o in res['organizations']:
                 for s in o['sites']:
