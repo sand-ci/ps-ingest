@@ -60,7 +60,7 @@ class NetworkMLTelementryCollector(collector.Collector):
                     data['_index'] = self.es_index_prefix + INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
                     data['timestamp'] = r[0] * 1000
                     sha1_hash = hashlib.sha1()
-                    sha1_hash.update((m['meta']['org_metadata_key'].encode())
+                    sha1_hash.update(m['meta']['org_metadata_key'].encode())
                     sha1_hash.update(str(data['timestamp']).encode())
                     data['_id'] = sha1_hash.hexdigest()
                     data['sim_util'] = r[1]['ml']

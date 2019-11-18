@@ -47,7 +47,7 @@ class NetworkLHCOPNCollector(collector.Collector):
         data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
         data['timestamp'] = int(float(ts) * 1000)
         sha1_hash = hashlib.sha1()
-        sha1_hash.update((m['meta']['org_metadata_key'].encode())
+        sha1_hash.update(m['meta']['org_metadata_key'].encode())
         sha1_hash.update(str(data['timestamp']).encode())
         data['_id'] = sha1_hash.hexdigest()
         data['utilization'] = int(th)
