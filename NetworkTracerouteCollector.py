@@ -87,16 +87,12 @@ class NetworkTracerouteCollector(collector.Collector):
                 else:
                     data['asns'].append(0)
                 # print(data)
-            hs = ''
-            for h in data['hops']:
-                if h == None:
-                    hs += "None"
-                else:
-                    hs += h
             data['n_hops'] = len(data['hops'])
             if len(data['rtts']):
                 data['max_rtt'] = max(data['rtts'])
-            data['hash'] = hash(hs)
+            route_hash = hashlib.sha1()
+            route_hash.update(";".join(data['hops']))
+            data['route-sha1'] = route_hash.hexdigest()
             self.aLotOfData.append(copy.copy(data))
             
 
