@@ -91,7 +91,7 @@ class NetworkTracerouteCollector(collector.Collector):
             if len(data['rtts']):
                 data['max_rtt'] = max(data['rtts'])
             route_hash = hashlib.sha1()
-            route_hash.update(";".join(data['hops']))
+            route_hash.update(";".join(data['hops']).encode())
             data['route-sha1'] = route_hash.hexdigest()
             self.aLotOfData.append(copy.copy(data))
             
