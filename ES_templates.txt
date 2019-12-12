@@ -1,18 +1,20 @@
 POST /_template/perfsonar_packetloss
 {
-  "template" : "ps_packetloss-*",
+  "index_patterns" : "ps_packetloss-*",
   "settings": {
     "index": {
-      "mapping.single_type": false,
-      "number_of_shards": "5",
-      "number_of_replicas": "0"
+      "lifecycle.name": "perfsonar",
+      "lifecycle.rollover_alias": "ps_packet_loss",
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
     }
   },
   "aliases": {
-    "ps_packet_loss": {}
+    "ps_packet_loss": {
+      "is_write_index": true
+    }
   },
   "mappings": {
-    "doc": {
       "properties": {
         "MA": {"type": "keyword" },
         "src": {"type": "keyword" },        
@@ -28,25 +30,22 @@ POST /_template/perfsonar_packetloss
         "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
         "packet_loss": { "type": "float" }
       }
-    }
   }
 }
 
 POST /_template/perfsonar_owd
 {
-  "template" : "ps_owd-*",
+  "index_patterns" : "ps_owd-*",
   "settings": {
     "index": {
-      "mapping.single_type": false,
-      "number_of_shards": "5",
-      "number_of_replicas": "0"
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
     }
   },
   "aliases": {
     "ps_owd": {}
   },
   "mappings": {
-    "doc": {
       "properties": {
         "MA": {"type": "keyword" },
         "src": {"type": "keyword" },        
@@ -64,26 +63,23 @@ POST /_template/perfsonar_owd
         "delay_median": { "type": "float" },
         "delay_sd": { "type": "float" }
       }
-    }
   }
 }
 
 
 POST /_template/perfsonar_throughput
 {
-  "template" : "ps_throughput-*",
+  "index_patterns" : "ps_throughput-*",
   "settings": {
     "index": {
-      "mapping.single_type": false,
-      "number_of_shards": "5",
-      "number_of_replicas": "0"
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
     }
   },
   "aliases": {
     "ps_throughput": {}
   },
   "mappings": {
-    "doc": {
       "properties": {
         "MA": {"type": "keyword" },
         "src": {"type": "keyword" },        
@@ -99,7 +95,6 @@ POST /_template/perfsonar_throughput
         "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
         "throughput": { "type": "long" }
       }
-    }
   }
 }
 
@@ -107,19 +102,17 @@ POST /_template/perfsonar_throughput
 
 POST /_template/perfsonar_traceroute
 {
-  "template" : "ps_trace-*",
+  "index_patterns" : "ps_trace-*",
   "settings": {
     "index": {
-      "mapping.single_type": false,
-      "number_of_shards": "5",
-      "number_of_replicas": "0"
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
     }
   },
   "aliases": {
     "ps_trace": {}
   },
   "mappings": {
-    "doc": {
       "properties": {
         "MA": {"type": "keyword" },
         "src": {"type": "keyword" },        
@@ -138,26 +131,23 @@ POST /_template/perfsonar_traceroute
       	"rtts":{"type":"float"},
 	      "hash":{"type":"long"}
       }
-    }
   }
 }
 
 
 POST /_template/perfsonar_telemetry
 {
-  "template" : "ps_telemetry-*",
+  "index_patterns" : "ps_telemetry-*",
   "settings": {
     "index": {
-      "mapping.single_type": false,
-      "number_of_shards": "5",
-      "number_of_replicas": "0"
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
     }
   },
   "aliases": {
     "ps_telemetry": {}
   },
   "mappings": {
-    "doc": {
       "properties": {
         "MA": {"type": "keyword" },
         "src": {"type": "keyword" },        
@@ -173,7 +163,6 @@ POST /_template/perfsonar_telemetry
         "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
         "sim_util": { "type": "float" }
       }
-    }
   }
 }
 
@@ -181,19 +170,17 @@ POST /_template/perfsonar_telemetry
 
 POST /_template/perfsonar_retransmits
 {
-  "template" : "ps_retransmits-*",
+  "index_patterns" : "ps_retransmits-*",
   "settings": {
     "index": {
-      "mapping.single_type": false,
-      "number_of_shards": "5",
-      "number_of_replicas": "0"
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
     }
   },
   "aliases": {
     "ps_retransmits": {}
   },
   "mappings": {
-    "doc": {
       "properties": {
         "MA": {"type": "keyword" },
         "src": {"type": "keyword" },        
@@ -209,7 +196,6 @@ POST /_template/perfsonar_retransmits
         "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
         "retransmits": { "type": "float" }
       }
-    }
   }
 }
 
@@ -217,19 +203,17 @@ POST /_template/perfsonar_retransmits
 
  POST /_template/perfsonar_lhcopn
 {
-  "template" : "ps_lhcopn-*",
+  "index_patterns" : "ps_lhcopn-*",
   "settings": {
     "index": {
-      "mapping.single_type": false,
-      "number_of_shards": "5",
-      "number_of_replicas": "0"
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
     }
   },
   "aliases": {
     "ps_lhcopn": {}
   },
   "mappings": {
-    "doc": {
       "properties": {
         "MA": {"type": "keyword" },
         "src": {"type": "keyword" },        
@@ -239,7 +223,6 @@ POST /_template/perfsonar_retransmits
         "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
         "utilization": { "type": "float" }
       }
-    }
   }
 }
 
@@ -247,19 +230,17 @@ POST /_template/perfsonar_retransmits
 
 POST /_template/perfsonar_meta
 {
-  "template" : "ps_meta-*",
+  "index_patterns" : "ps_meta-*",
   "settings": {
     "index": {
-      "mapping.single_type": false,
-      "number_of_shards": "5",
-      "number_of_replicas": "0"
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
     }
   },
   "aliases": {
     "ps_meta": {}
   },
   "mappings": {
-    "doc": {
       "properties": {
         "administrator": {
           "properties": {
@@ -376,6 +357,5 @@ POST /_template/perfsonar_meta
         "toolkit_rpm_version": {"type": "keyword" },
         "toolkit_version": {"type": "keyword" }
       }
-    }
   }
 }

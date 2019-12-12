@@ -15,16 +15,13 @@ import siteMapping
 import collector
 
 
-
 class NetworkPacketLossCollector(collector.Collector):
-
 
     def __init__(self):
 
         self.TOPIC = "/topic/perfsonar.raw.packet-loss-rate"
-        self.INDEX_PREFIX = 'ps_packetloss-'
+        self.INDEX = 'ps_packetloss_write'
         super(NetworkPacketLossCollector, self).__init__()
-
 
     def eventCreator(self, message):
         m = json.loads(message)
@@ -59,8 +56,7 @@ class NetworkPacketLossCollector(collector.Collector):
         su = m['datapoints']
         # print(su)
         for ts, th in su.items():
-            dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
             sha1_hash = hashlib.sha1()
             sha1_hash.update(m['meta']['org_metadata_key'].encode())
@@ -74,6 +70,7 @@ class NetworkPacketLossCollector(collector.Collector):
 def main():
     collector = NetworkPacketLossCollector()
     collector.start()
+
 
 if __name__ == "__main__":
     main()

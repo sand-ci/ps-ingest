@@ -1,0 +1,96 @@
+PUT _ilm/policy/perfsonar
+{
+  "policy": {
+    "phases": {
+      "hot": {
+        "min_age": "1d",
+        "actions": {
+          "rollover" : {
+            "max_size": "20GB",
+            "max_age": "5d"
+          }
+        }
+      },
+      "warm": {
+        "min_age": "7d",
+        "actions": {
+          "readonly" : { },
+          "forcemerge" : {
+            "max_num_segments": 1
+          },
+          "allocate": {
+            "number_of_replicas": 1
+          },
+          "shrink" : {
+            "number_of_shards": 2
+          }
+        }
+      },
+      "cold": {
+        "min_age": "30d",
+        "actions": {          
+          "allocate": {
+            "number_of_replicas": 1
+          }
+        }
+      },
+      "delete": {
+        "min_age": "540d",
+        "actions": {
+          "delete": {}
+        }
+      }
+    }
+  }
+}
+
+
+
+POST /_template/perfsonar_packetloss
+{
+  "index_patterns" : "ps_packetloss-*",
+  "settings": {
+    "index": {
+      "lifecycle.name": "perfsonar",
+      "lifecycle.rollover_alias": "ps_packetloss_write",
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
+    }
+  },
+  "aliases": {
+    "ps_packetloss": {
+      "is_write_index": false
+    }
+  },
+  "mappings": {
+      "properties": {
+        "MA": {"type": "keyword" },
+        "src": {"type": "keyword" },        
+        "src_host": {"type": "keyword" },
+        "src_site": {"type": "keyword" },
+        "src_VO": {"type": "keyword" }, 
+        "src_production": {"type": "boolean" },
+        "dest": {"type": "keyword" },
+        "dest_host": {"type": "keyword" },
+        "dest_site": {"type": "keyword" },
+        "dest_VO": {"type": "keyword" },
+        "dest_production": { "type": "boolean" },   
+        "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
+        "packet_loss": { "type": "float" }
+      }
+  }
+}
+
+
+PUT ps_packetloss-000001
+{
+  "settings": {
+    "index.lifecycle.name": "perfsonar",
+    "index.lifecycle.rollover_alias": "ps_packetloss_write"
+  },
+  "aliases": {
+    "ps_packetloss_write": {
+      "is_write_index": true
+    }
+  }
+}
