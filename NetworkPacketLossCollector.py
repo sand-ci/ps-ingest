@@ -27,7 +27,6 @@ class NetworkPacketLossCollector(collector.Collector):
         m = json.loads(message)
 
         data = {
-            '_type': 'doc'
         }
 
         source = m['meta']['source']
