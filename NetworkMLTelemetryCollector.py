@@ -2,15 +2,10 @@
 
 # NOT USED ANYMORE
 
-import os
-import queue
-import socket
-import time
 import threading
 from threading import Thread
 import copy
 import json
-from datetime import datetime
 import hashlib
 
 import collector
@@ -21,16 +16,13 @@ class NetworkMLTelementryCollector(collector.Collector):
 
     def __init__(self):
         self.TOPIC = "/topic/telemetry.perfsonar"
-        self.INDEX_PREFIX = 'ps_telemetry-'
-        return super().__init__()
-
+        self.INDEX = 'ps_telemetry_write'
+        super(NetworkMLTelementryCollector, self).__init__()
 
     def eventCreator(self, message):
-    
+
         m = json.loads(message)
-        data = {
-            '_type': 'doc'
-        }
+        data = {}
 
         source = m['meta']['source']
         destination = m['meta']['destination']
@@ -56,8 +48,7 @@ class NetworkMLTelementryCollector(collector.Collector):
                 results = s['summary_data']
                 # print(results)
                 for r in results:
-                    dati = datetime.utcfromtimestamp(float(r[0]))
-                    data['_index'] = self.es_index_prefix + INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+                    data['_index'] = self.INDEX
                     data['timestamp'] = r[0] * 1000
                     sha1_hash = hashlib.sha1()
                     sha1_hash.update(m['meta']['org_metadata_key'].encode())
@@ -66,10 +57,12 @@ class NetworkMLTelementryCollector(collector.Collector):
                     data['sim_util'] = r[1]['ml']
             # print(data)
             self.aLotOfData.append(copy.copy(data))
-        
+
+
 def main():
     collector = NetworkMLTelementryCollector()
     collector.start()
+
 
 if __name__ == "__main__":
     main()

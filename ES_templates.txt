@@ -1,17 +1,18 @@
+
 POST /_template/perfsonar_packetloss
 {
   "index_patterns" : "ps_packetloss-*",
   "settings": {
     "index": {
       "lifecycle.name": "perfsonar",
-      "lifecycle.rollover_alias": "ps_packet_loss",
+      "lifecycle.rollover_alias": "ps_packetloss_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
     }
   },
   "aliases": {
-    "ps_packet_loss": {
-      "is_write_index": true
+    "ps_packetloss": {
+      "is_write_index": false
     }
   },
   "mappings": {
@@ -33,37 +34,71 @@ POST /_template/perfsonar_packetloss
   }
 }
 
+
 POST /_template/perfsonar_owd
 {
-  "index_patterns" : "ps_owd-*",
-  "settings": {
-    "index": {
-      "number_of_shards": "6",
-      "number_of_replicas": "1"
-    }
-  },
-  "aliases": {
-    "ps_owd": {}
-  },
-  "mappings": {
-      "properties": {
-        "MA": {"type": "keyword" },
-        "src": {"type": "keyword" },        
-        "src_host": {"type": "keyword" },
-        "src_site": {"type": "keyword" },
-        "src_VO": {"type": "keyword" }, 
-        "src_production": {"type": "boolean" },
-        "dest": {"type": "keyword" },
-        "dest_host": {"type": "keyword" },
-        "dest_site": {"type": "keyword" },
-        "dest_VO": {"type": "keyword" },
-        "dest_production": { "type": "boolean" },   
-        "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
-        "delay_mean": { "type": "float" },
-        "delay_median": { "type": "float" },
-        "delay_sd": { "type": "float" }
+  "index_patterns" : [ "ps_owd-*" ],
+    "settings" : {
+      "index" : {
+        "lifecycle.name": "perfsonar",
+        "lifecycle.rollover_alias": "ps_owd_write",
+        "number_of_shards" : "6",
+        "number_of_replicas" : "1"
       }
-  }
+    },
+    "mappings" : {
+      "properties" : {
+        "MA" : {
+          "type" : "keyword"
+        },
+        "src" : {
+          "type" : "keyword"
+        },
+        "src_host" : {
+          "type" : "keyword"
+        },
+        "src_site" : {
+          "type" : "keyword"
+        },
+        "src_VO" : {
+          "type" : "keyword"
+        },
+        "src_production" : {
+          "type" : "boolean"
+        },
+        "dest" : {
+          "type" : "keyword"
+        },
+        "dest_host" : {
+          "type" : "keyword"
+        },
+        "dest_site" : {
+          "type" : "keyword"
+        },
+        "dest_VO" : {
+          "type" : "keyword"
+        },
+        "dest_production" : {
+          "type" : "boolean"
+        },
+        "timestamp" : {
+          "type" : "date",
+          "format" : "basic_date_time_no_millis||epoch_millis"
+        },
+        "delay_mean" : {
+          "type" : "float"
+        },
+        "delay_median" : {
+          "type" : "float"
+        },
+        "delay_sd" : {
+          "type" : "float"
+        }
+      }
+    },
+    "aliases" : {
+      "ps_owd" : { }
+    }
 }
 
 
@@ -72,6 +107,8 @@ POST /_template/perfsonar_throughput
   "index_patterns" : "ps_throughput-*",
   "settings": {
     "index": {
+      "lifecycle.name": "perfsonar",
+      "lifecycle.rollover_alias": "ps_throughput_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
     }
@@ -79,25 +116,51 @@ POST /_template/perfsonar_throughput
   "aliases": {
     "ps_throughput": {}
   },
-  "mappings": {
-      "properties": {
-        "MA": {"type": "keyword" },
-        "src": {"type": "keyword" },        
-        "src_host": {"type": "keyword" },
-        "src_site": {"type": "keyword" },
-        "src_VO": {"type": "keyword" }, 
-        "src_production": {"type": "boolean" },
-        "dest": {"type": "keyword" },
-        "dest_host": {"type": "keyword" },
-        "dest_site": {"type": "keyword" },
-        "dest_VO": {"type": "keyword" },
-        "dest_production": { "type": "boolean" },   
-        "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
-        "throughput": { "type": "long" }
+    "mappings" : {
+      "properties" : {
+        "MA" : {
+          "type" : "keyword"
+        },
+        "src" : {
+          "type" : "keyword"
+        },
+        "src_host" : {
+          "type" : "keyword"
+        },
+        "src_site" : {
+          "type" : "keyword"
+        },
+        "src_VO" : {
+          "type" : "keyword"
+        },
+        "src_production" : {
+          "type" : "boolean"
+        },
+        "dest" : {
+          "type" : "keyword"
+        },
+        "dest_host" : {
+          "type" : "keyword"
+        },
+        "dest_site" : {
+          "type" : "keyword"
+        },
+        "dest_VO" : {
+          "type" : "keyword"
+        },
+        "dest_production" : {
+          "type" : "boolean"
+        },
+        "timestamp" : {
+          "type" : "date",
+          "format" : "basic_date_time_no_millis||epoch_millis"
+        },
+        "throughput" : {
+          "type" : "long"
+        }
       }
-  }
+    }
 }
-
 
 
 POST /_template/perfsonar_traceroute
@@ -105,6 +168,8 @@ POST /_template/perfsonar_traceroute
   "index_patterns" : "ps_trace-*",
   "settings": {
     "index": {
+      "lifecycle.name": "perfsonar",
+      "lifecycle.rollover_alias": "ps_trace_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
     }
@@ -112,26 +177,59 @@ POST /_template/perfsonar_traceroute
   "aliases": {
     "ps_trace": {}
   },
-  "mappings": {
-      "properties": {
-        "MA": {"type": "keyword" },
-        "src": {"type": "keyword" },        
-        "src_host": {"type": "keyword" },
-        "src_site": {"type": "keyword" },
-        "src_VO": {"type": "keyword" }, 
-        "src_production": {"type": "boolean" },
-        "dest": {"type": "keyword" },
-        "dest_host": {"type": "keyword" },
-        "dest_site": {"type": "keyword" },
-        "dest_VO": {"type": "keyword" },
-        "dest_production": { "type": "boolean" },   
-        "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
-        "hops":{"type": "keyword" },
-        "ttls":{"type":"integer"},
-      	"rtts":{"type":"float"},
-	      "hash":{"type":"long"}
+   "mappings" : {
+      "properties" : {
+        "MA" : {
+          "type" : "keyword"
+        },
+        "src" : {
+          "type" : "keyword"
+        },
+        "src_host" : {
+          "type" : "keyword"
+        },
+        "src_site" : {
+          "type" : "keyword"
+        },
+        "src_VO" : {
+          "type" : "keyword"
+        },
+        "src_production" : {
+          "type" : "boolean"
+        },
+        "dest" : {
+          "type" : "keyword"
+        },
+        "dest_host" : {
+          "type" : "keyword"
+        },
+        "dest_site" : {
+          "type" : "keyword"
+        },
+        "dest_VO" : {
+          "type" : "keyword"
+        },
+        "dest_production" : {
+          "type" : "boolean"
+        },
+        "timestamp" : {
+          "type" : "date",
+          "format" : "basic_date_time_no_millis||epoch_millis"
+        },
+        "hops" : {
+          "type" : "keyword"
+        },
+        "ttls" : {
+          "type" : "integer"
+        },
+        "rtts" : {
+          "type" : "float"
+        },
+        "hash" : {
+          "type" : "long"
+        }
       }
-  }
+    }
 }
 
 
@@ -140,6 +238,8 @@ POST /_template/perfsonar_telemetry
   "index_patterns" : "ps_telemetry-*",
   "settings": {
     "index": {
+      "lifecycle.name": "perfsonar",
+      "lifecycle.rollover_alias": "ps_telemetry_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
     }
@@ -147,25 +247,51 @@ POST /_template/perfsonar_telemetry
   "aliases": {
     "ps_telemetry": {}
   },
-  "mappings": {
-      "properties": {
-        "MA": {"type": "keyword" },
-        "src": {"type": "keyword" },        
-        "src_host": {"type": "keyword" },
-        "src_site": {"type": "keyword" },
-        "src_VO": {"type": "keyword" }, 
-        "src_production": {"type": "boolean" },
-        "dest": {"type": "keyword" },
-        "dest_host": {"type": "keyword" },
-        "dest_site": {"type": "keyword" },
-        "dest_VO": {"type": "keyword" },
-        "dest_production": { "type": "boolean" },   
-        "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
-        "sim_util": { "type": "float" }
+    "mappings" : {
+      "properties" : {
+        "MA" : {
+          "type" : "keyword"
+        },
+        "src" : {
+          "type" : "keyword"
+        },
+        "src_host" : {
+          "type" : "keyword"
+        },
+        "src_site" : {
+          "type" : "keyword"
+        },
+        "src_VO" : {
+          "type" : "keyword"
+        },
+        "src_production" : {
+          "type" : "boolean"
+        },
+        "dest" : {
+          "type" : "keyword"
+        },
+        "dest_host" : {
+          "type" : "keyword"
+        },
+        "dest_site" : {
+          "type" : "keyword"
+        },
+        "dest_VO" : {
+          "type" : "keyword"
+        },
+        "dest_production" : {
+          "type" : "boolean"
+        },
+        "timestamp" : {
+          "type" : "date",
+          "format" : "basic_date_time_no_millis||epoch_millis"
+        },
+        "sim_util" : {
+          "type" : "float"
+        }
       }
-  }
+    },
 }
-
 
 
 POST /_template/perfsonar_retransmits
@@ -173,6 +299,8 @@ POST /_template/perfsonar_retransmits
   "index_patterns" : "ps_retransmits-*",
   "settings": {
     "index": {
+      "lifecycle.name": "perfsonar",
+      "lifecycle.rollover_alias": "ps_retransmits_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
     }
@@ -180,32 +308,59 @@ POST /_template/perfsonar_retransmits
   "aliases": {
     "ps_retransmits": {}
   },
-  "mappings": {
-      "properties": {
-        "MA": {"type": "keyword" },
-        "src": {"type": "keyword" },        
-        "src_host": {"type": "keyword" },
-        "src_site": {"type": "keyword" },
-        "src_VO": {"type": "keyword" }, 
-        "src_production": {"type": "boolean" },
-        "dest": {"type": "keyword" },
-        "dest_host": {"type": "keyword" },
-        "dest_site": {"type": "keyword" },
-        "dest_VO": {"type": "keyword" },
-        "dest_production": { "type": "boolean" },   
-        "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
-        "retransmits": { "type": "float" }
+  "mappings" : {
+      "properties" : {
+        "MA" : {
+          "type" : "keyword"
+        },
+        "src" : {
+          "type" : "keyword"
+        },
+        "src_host" : {
+          "type" : "keyword"
+        },
+        "src_site" : {
+          "type" : "keyword"
+        },
+        "src_VO" : {
+          "type" : "keyword"
+        },
+        "src_production" : {
+          "type" : "boolean"
+        },
+        "dest" : {
+          "type" : "keyword"
+        },
+        "dest_host" : {
+          "type" : "keyword"
+        },
+        "dest_site" : {
+          "type" : "keyword"
+        },
+        "dest_VO" : {
+          "type" : "keyword"
+        },
+        "dest_production" : {
+          "type" : "boolean"
+        },
+        "timestamp" : {
+          "type" : "date",
+          "format" : "basic_date_time_no_millis||epoch_millis"
+        },
+        "retransmits" : {
+          "type" : "float"
+        }
       }
-  }
+    }
 }
-
-
 
  POST /_template/perfsonar_lhcopn
 {
   "index_patterns" : "ps_lhcopn-*",
   "settings": {
     "index": {
+      "lifecycle.name": "perfsonar",
+      "lifecycle.rollover_alias": "ps_lhcopn_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
     }
@@ -213,19 +368,33 @@ POST /_template/perfsonar_retransmits
   "aliases": {
     "ps_lhcopn": {}
   },
-  "mappings": {
-      "properties": {
-        "MA": {"type": "keyword" },
-        "src": {"type": "keyword" },        
-        "src_interface": {"type": "keyword" },
-        "dest": {"type": "keyword" },
-        "dest_interface": {"type": "keyword" },
-        "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
-        "utilization": { "type": "float" }
+  "mappings" : {
+      "properties" : {
+        "MA" : {
+          "type" : "keyword"
+        },
+        "src" : {
+          "type" : "keyword"
+        },
+        "src_interface" : {
+          "type" : "keyword"
+        },
+        "dest" : {
+          "type" : "keyword"
+        },
+        "dest_interface" : {
+          "type" : "keyword"
+        },
+        "timestamp" : {
+          "type" : "date",
+          "format" : "basic_date_time_no_millis||epoch_millis"
+        },
+        "utilization" : {
+          "type" : "float"
+        }
       }
-  }
+    }
 }
-
 
 
 POST /_template/perfsonar_meta
@@ -233,6 +402,8 @@ POST /_template/perfsonar_meta
   "index_patterns" : "ps_meta-*",
   "settings": {
     "index": {
+      "lifecycle.name": "perfsonar",
+      "lifecycle.rollover_alias": "ps_meta_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
     }
@@ -240,122 +411,239 @@ POST /_template/perfsonar_meta
   "aliases": {
     "ps_meta": {}
   },
-  "mappings": {
-      "properties": {
-        "administrator": {
-          "properties": {
-            "email":{"type": "keyword" },
-            "name":{"type": "keyword" },
-            "organization": {"type": "keyword" }
+    "mappings" : {
+      "properties" : {
+        "administrator" : {
+          "properties" : {
+            "email" : {
+              "type" : "keyword"
+            },
+            "name" : {
+              "type" : "keyword"
+            },
+            "organization" : {
+              "type" : "keyword"
+            }
           }
         },
-        "communities": {"type": "keyword" },
-        "distribution": {"type": "keyword" },
-        "external_address": {
-          "properties": {
-            "address":{"type": "keyword" },
-            "dns_name": {"type": "keyword" },
-            "iface": {"type": "keyword" },
-            "ipv4_address": {"type": "keyword" },
-            "ipv6_address": {"type": "keyword" }
+        "communities" : {
+          "type" : "keyword"
+        },
+        "distribution" : {
+          "type" : "keyword"
+        },
+        "external_address" : {
+          "properties" : {
+            "address" : {
+              "type" : "keyword"
+            },
+            "dns_name" : {
+              "type" : "keyword"
+            },
+            "iface" : {
+              "type" : "keyword"
+            },
+            "ipv4_address" : {
+              "type" : "keyword"
+            },
+            "ipv6_address" : {
+              "type" : "keyword"
+            }
           }
         },
-        "geolocation": {"type": "geo_point"},
-        "ls_client_uuid": {  "type": "text"  },
-        "meshes": {   "type": "text"  },
-        "ntp": {
-          "properties": {
-            "address": {"type": "keyword" },
-            "host": {"type": "keyword" }
+        "geolocation" : {
+          "type" : "geo_point"
+        },
+        "ls_client_uuid" : {
+          "type" : "text"
+        },
+        "meshes" : {
+          "type" : "text"
+        },
+        "ntp" : {
+          "properties" : {
+            "address" : {
+              "type" : "keyword"
+            },
+            "host" : {
+              "type" : "keyword"
+            }
           }
         },
-        "product_name": {"type": "keyword" },
-        "services": {
-          "properties": {
-            "bwctl": {
-              "properties": {
-                "addresses":{"type": "keyword" },
-                "daemon_port": {"type": "keyword" },
-                "enabled": {"type": "keyword" },
-                "is_running": {"type": "keyword" },
-                "version": {"type": "keyword" }               
-	            }
-            },
-            "esmond": {
-              "properties": {
-                "addresses":{"type": "keyword" },
-                "enabled": {"type": "keyword" },
-                "is_running":{"type": "keyword" },
-                "version": {"type": "keyword" }
+        "product_name" : {
+          "type" : "keyword"
+        },
+        "services" : {
+          "properties" : {
+            "bwctl" : {
+              "properties" : {
+                "addresses" : {
+                  "type" : "keyword"
+                },
+                "daemon_port" : {
+                  "type" : "keyword"
+                },
+                "enabled" : {
+                  "type" : "keyword"
+                },
+                "is_running" : {
+                  "type" : "keyword"
+                },
+                "version" : {
+                  "type" : "keyword"
+                }
               }
             },
-            "iperf3": {
-              "properties": {
-                "is_running":{"type": "keyword" },
-                "version":{"type": "keyword" }
+            "esmond" : {
+              "properties" : {
+                "addresses" : {
+                  "type" : "keyword"
+                },
+                "enabled" : {
+                  "type" : "keyword"
+                },
+                "is_running" : {
+                  "type" : "keyword"
+                },
+                "version" : {
+                  "type" : "keyword"
+                }
               }
             },
-            "lsregistration": {
-              "properties": {
-                "enabled": {"type": "keyword" },
-                "is_running":{"type": "keyword" },
-                "version": {"type": "keyword" }
+            "iperf3" : {
+              "properties" : {
+                "is_running" : {
+                  "type" : "keyword"
+                },
+                "version" : {
+                  "type" : "keyword"
+                }
               }
             },
-            "meshconfig-agent": {
-              "properties": {
-                "enabled":{"type": "keyword" },
-                "is_running":{"type": "keyword" },
-                "version": {"type": "keyword" }
+            "lsregistration" : {
+              "properties" : {
+                "enabled" : {
+                  "type" : "keyword"
+                },
+                "is_running" : {
+                  "type" : "keyword"
+                },
+                "version" : {
+                  "type" : "keyword"
+                }
               }
             },
-            "ndt": {
-              "properties": {
-                "addresses": {"type": "keyword" },
-                "daemon_port": {"type": "keyword" },
-                "is_running": {"type": "keyword" },
-                "version":{"type": "keyword" }
+            "meshconfig-agent" : {
+              "properties" : {
+                "enabled" : {
+                  "type" : "keyword"
+                },
+                "is_running" : {
+                  "type" : "keyword"
+                },
+                "version" : {
+                  "type" : "keyword"
+                }
               }
             },
-            "npad": {
-              "properties": {
-                "addresses": {"type": "keyword" },
-                "daemon_port":{"type": "keyword" },
-                "is_running": {"type": "keyword" },
-                "version":{"type": "keyword" }
+            "ndt" : {
+              "properties" : {
+                "addresses" : {
+                  "type" : "keyword"
+                },
+                "daemon_port" : {
+                  "type" : "keyword"
+                },
+                "is_running" : {
+                  "type" : "keyword"
+                },
+                "version" : {
+                  "type" : "keyword"
+                }
               }
             },
-            "owamp": {
-              "properties": {
-                "addresses": {"type": "keyword" },
-                "daemon_port":{"type": "keyword" },
-                "enabled": {"type": "keyword" },
-                "is_running":{"type": "keyword" },
-                "version": {"type": "keyword" }
+            "npad" : {
+              "properties" : {
+                "addresses" : {
+                  "type" : "keyword"
+                },
+                "daemon_port" : {
+                  "type" : "keyword"
+                },
+                "is_running" : {
+                  "type" : "keyword"
+                },
+                "version" : {
+                  "type" : "keyword"
+                }
               }
             },
-            "pscheduler": {
-              "properties": {
-                "addresses":{"type": "keyword" },
-                "enabled": {"type": "keyword" },
-                "is_running": {"type": "keyword" },
-                "version": {"type": "keyword" }
+            "owamp" : {
+              "properties" : {
+                "addresses" : {
+                  "type" : "keyword"
+                },
+                "daemon_port" : {
+                  "type" : "keyword"
+                },
+                "enabled" : {
+                  "type" : "keyword"
+                },
+                "is_running" : {
+                  "type" : "keyword"
+                },
+                "version" : {
+                  "type" : "keyword"
+                }
               }
             },
-            "regular_testing": {
-              "properties": {
-                "enabled": {"type": "keyword" },
-                "is_running":{"type": "keyword" },
-                "version": {"type": "keyword" }
+            "pscheduler" : {
+              "properties" : {
+                "addresses" : {
+                  "type" : "keyword"
+                },
+                "enabled" : {
+                  "type" : "keyword"
+                },
+                "is_running" : {
+                  "type" : "keyword"
+                },
+                "version" : {
+                  "type" : "keyword"
+                }
+              }
+            },
+            "regular_testing" : {
+              "properties" : {
+                "enabled" : {
+                  "type" : "keyword"
+                },
+                "is_running" : {
+                  "type" : "keyword"
+                },
+                "version" : {
+                  "type" : "keyword"
+                }
               }
             }
           }
         },
-        "sys_vendor": {"type": "keyword" },
-        "timestamp": {  "type": "date", "format": "basic_date_time_no_millis||epoch_millis" },
-        "toolkit_name": {"type": "keyword" },
-        "toolkit_rpm_version": {"type": "keyword" },
-        "toolkit_version": {"type": "keyword" }
+        "sys_vendor" : {
+          "type" : "keyword"
+        },
+        "timestamp" : {
+          "type" : "date",
+          "format" : "basic_date_time_no_millis||epoch_millis"
+        },
+        "toolkit_name" : {
+          "type" : "keyword"
+        },
+        "toolkit_rpm_version" : {
+          "type" : "keyword"
+        },
+        "toolkit_version" : {
+          "type" : "keyword"
+        }
       }
-  }
+    }
 }

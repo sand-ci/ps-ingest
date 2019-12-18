@@ -1,33 +1,26 @@
 #!/usr/bin/env python
 
-import os
-import queue
-import socket
-import time
 import threading
 from threading import Thread
 import copy
 import json
-from datetime import datetime
 
-import stomp
 import siteMapping
 import collector
 
 
 class NetworkStatusCollector(collector.Collector):
-    
+
     def __init__(self):
         self.TOPIC = "/topic/perfsonar.summary.status"
-        self.INDEX_PREFIX = 'ps_status-'
-        return super(NetworkStatusCollector, self).__init__()
+        self.INDEX = 'ps_status_write'
+        super(NetworkStatusCollector, self).__init__()
 
     def eventCreator(self, message):
-    
+
         m = json.loads(message)
-        data = {
-            '_type': 'doc'
-        }
+        data = {}
+
         metrics = ['perfSONAR services: ntp', 'perfSONAR esmond freshness', 'OSG datastore freshness',
                    'perfSONAR services: pscheduler']
         found = False
@@ -45,17 +38,16 @@ class NetworkStatusCollector(collector.Collector):
         prefix = m['metric'].replace("perfSONAR", "ps").replace(":", "").replace(" ", "_").lower()
         for k in m['perf_metrics'].keys():
             data[prefix + "_" + k] = m['perf_metrics'][k]
-        dati = datetime.utcfromtimestamp(float(m['timestamp']))
-        data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month)
+        data['_index'] = self.INDEX
         data['timestamp'] = int(float(m['timestamp']) * 1000)
         # print(data)
         self.aLotOfData.append(copy.copy(data))
 
 
-
 def main():
     collector = NetworkStatusCollector()
     collector.start()
+
 
 if __name__ == "__main__":
     main()

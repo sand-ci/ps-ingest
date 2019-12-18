@@ -1,17 +1,11 @@
 #!/usr/bin/env python
 
-import os
-import queue
-import socket
-import time
 import threading
 from threading import Thread
 import copy
 import json
-from datetime import datetime
 import hashlib
 
-import stomp
 import siteMapping
 import collector
 
@@ -20,16 +14,15 @@ class NetworkRetransmitsCollector(collector.Collector):
 
     def __init__(self):
         self.TOPIC = "/topic/perfsonar.raw.packet-retransmits"
-        self.INDEX_PREFIX = 'ps_retransmits-'
+        self.INDEX = 'ps_retransmits_write'
         super(NetworkRetransmitsCollector, self).__init__()
 
     def eventCreator(self, message):
-    
+
         m = json.loads(message)
 
-        data = {
-            '_type': 'doc'
-        }
+        data = {}
+
         # print(m)
         source = m['meta']['source']
         destination = m['meta']['destination']
@@ -58,8 +51,7 @@ class NetworkRetransmitsCollector(collector.Collector):
             return
         su = m['datapoints']
         for ts, th in su.items():
-            dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
+            data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
             sha1_hash = hashlib.sha1()
             sha1_hash.update(m['meta']['org_metadata_key'].encode())
@@ -70,10 +62,10 @@ class NetworkRetransmitsCollector(collector.Collector):
             self.aLotOfData.append(copy.copy(data))
 
 
-
 def main():
     collector = NetworkRetransmitsCollector()
     collector.start()
+
 
 if __name__ == "__main__":
     main()

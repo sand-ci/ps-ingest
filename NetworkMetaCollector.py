@@ -1,16 +1,9 @@
 #!/usr/bin/env python
 
-import os
-import queue
-import socket
-import time
 import threading
 from threading import Thread
 import copy
 import json
-from datetime import datetime
-
-import stomp
 import collector
 
 
@@ -72,17 +65,15 @@ def clean(data):
 class NetworkMetaCollector(collector.Collector):
     def __init__(self):
         self.TOPIC = "/topic/perfsonar.summary.meta"
-        self.INDEX_PREFIX = 'ps_meta-'
-        return super().__init__()
-
+        self.INDEX = 'ps_meta_write'
+        super(NetworkMetaCollector, self).__init__()
 
     def eventCreator(self, message):
-    
-        m = json.loads(message)
-        data = {'_type': 'doc'}
 
-        dati = datetime.utcfromtimestamp(float(m['timestamp']))
-        data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
+        m = json.loads(message)
+        data = {}
+
+        data['_index'] = self.INDEX
         data.update(m)
         data.pop('interfaces', None)
         data['timestamp'] = int(float(m['timestamp']) * 1000)
@@ -135,11 +126,12 @@ class NetworkMetaCollector(collector.Collector):
         # print(data)
 
         self.aLotOfData.append(copy.copy(data))
-        
+
 
 def main():
     collector = NetworkMetaCollector()
     collector.start()
+
 
 if __name__ == "__main__":
     main()

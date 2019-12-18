@@ -46,41 +46,6 @@ PUT _ilm/policy/perfsonar
 
 
 
-POST /_template/perfsonar_packetloss
-{
-  "index_patterns" : "ps_packetloss-*",
-  "settings": {
-    "index": {
-      "lifecycle.name": "perfsonar",
-      "lifecycle.rollover_alias": "ps_packetloss_write",
-      "number_of_shards": "6",
-      "number_of_replicas": "1"
-    }
-  },
-  "aliases": {
-    "ps_packetloss": {
-      "is_write_index": false
-    }
-  },
-  "mappings": {
-      "properties": {
-        "MA": {"type": "keyword" },
-        "src": {"type": "keyword" },        
-        "src_host": {"type": "keyword" },
-        "src_site": {"type": "keyword" },
-        "src_VO": {"type": "keyword" }, 
-        "src_production": {"type": "boolean" },
-        "dest": {"type": "keyword" },
-        "dest_host": {"type": "keyword" },
-        "dest_site": {"type": "keyword" },
-        "dest_VO": {"type": "keyword" },
-        "dest_production": { "type": "boolean" },   
-        "timestamp": { "type": "date", "format": "basic_date_time_no_millis||epoch_millis"},
-        "packet_loss": { "type": "float" }
-      }
-  }
-}
-
 
 PUT ps_packetloss-000001
 {
@@ -90,6 +55,98 @@ PUT ps_packetloss-000001
   },
   "aliases": {
     "ps_packetloss_write": {
+      "is_write_index": true
+    }
+  }
+}
+
+
+PUT ps_owd-000001
+{
+  "settings": {
+    "index.lifecycle.name": "perfsonar",
+    "index.lifecycle.rollover_alias": "ps_owd_write"
+  },
+  "aliases": {
+    "ps_owd_write": {
+      "is_write_index": true
+    }
+  }
+}
+
+PUT ps_throughput-000001
+{
+  "settings": {
+    "index.lifecycle.name": "perfsonar",
+    "index.lifecycle.rollover_alias": "ps_throughput_write"
+  },
+  "aliases": {
+    "ps_throughput_write": {
+      "is_write_index": true
+    }
+  }
+}
+
+PUT ps_trace-000001
+{
+  "settings": {
+    "index.lifecycle.name": "perfsonar",
+    "index.lifecycle.rollover_alias": "ps_trace_write"
+  },
+  "aliases": {
+    "ps_trace_write": {
+      "is_write_index": true
+    }
+  }
+}
+
+PUT ps_telemetry-000001
+{
+  "settings": {
+    "index.lifecycle.name": "perfsonar",
+    "index.lifecycle.rollover_alias": "ps_telemetry_write"
+  },
+  "aliases": {
+    "ps_telemetry_write": {
+      "is_write_index": true
+    }
+  }
+}
+
+PUT ps_retransmits-000001
+{
+  "settings": {
+    "index.lifecycle.name": "perfsonar",
+    "index.lifecycle.rollover_alias": "ps_retransmits_write"
+  },
+  "aliases": {
+    "ps_retransmits_write": {
+      "is_write_index": true
+    }
+  }
+}
+
+PUT ps_lhcopn-000001
+{
+  "settings": {
+    "index.lifecycle.name": "perfsonar",
+    "index.lifecycle.rollover_alias": "ps_lhcopn_write"
+  },
+  "aliases": {
+    "ps_lhcopn_write": {
+      "is_write_index": true
+    }
+  }
+}
+
+PUT ps_meta-000001
+{
+  "settings": {
+    "index.lifecycle.name": "perfsonar",
+    "index.lifecycle.rollover_alias": "ps_meta_write"
+  },
+  "aliases": {
+    "ps_meta_write": {
       "is_write_index": true
     }
   }
