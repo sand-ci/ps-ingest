@@ -83,9 +83,33 @@ class NetworkTracerouteCollector(collector.Collector):
             data['n_hops'] = len(data['hops'])
             if len(data['rtts']):
                 data['max_rtt'] = max(data['rtts'])
+
+            if len(data['hops']) == 0:
+                print('ERROR: we should have no data without any hops.')
+                self.aLotOfData.append(copy.copy(data))
+                continue
+
+            data['destination_reached'] = False
+            core_path = data['hops']
+            if core_path[-1] == data['dest']:
+                core_path.remove(data['dest'])
+                # destination has been reached if the last hop is == destination
+                data['destination_reached'] = True
+
             route_hash = hashlib.sha1()
-            route_hash.update(";".join(data['hops']).encode())
+            route_hash.update(";".join(core_path).encode())
             data['route-sha1'] = route_hash.hexdigest()
+
+            # path complete means there are no * in hops.
+            data['path_complete'] = True
+            if '*' in core_path:
+                data['path_complete'] = False
+
+            # looping path contains at least one non-unique IP. it includes src and dest.
+            core_path.append(data['src'])
+            core_path.append(data['dest'])
+            data['looping'] = len(set(core_path)) != len(core_path)
+
             self.aLotOfData.append(copy.copy(data))
 
 
