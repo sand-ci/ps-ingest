@@ -182,6 +182,9 @@ POST /_template/perfsonar_traceroute
         "MA" : {
           "type" : "keyword"
         },
+        "route-sha1" : {
+          "type" : "keyword"
+        },
         "src" : {
           "type" : "keyword"
         },
@@ -224,9 +227,6 @@ POST /_template/perfsonar_traceroute
         },
         "rtts" : {
           "type" : "float"
-        },
-        "hash" : {
-          "type" : "long"
         }
       }
     }

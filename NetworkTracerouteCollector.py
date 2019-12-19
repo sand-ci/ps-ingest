@@ -90,7 +90,7 @@ class NetworkTracerouteCollector(collector.Collector):
                 continue
 
             data['destination_reached'] = False
-            core_path = data['hops']
+            core_path = copy.copy(data['hops'])
             if core_path[-1] == data['dest']:
                 core_path.remove(data['dest'])
                 # destination has been reached if the last hop is == destination
@@ -100,10 +100,10 @@ class NetworkTracerouteCollector(collector.Collector):
             route_hash.update(";".join(core_path).encode())
             data['route-sha1'] = route_hash.hexdigest()
 
-            # path complete means there are no * in hops.
-            data['path_complete'] = True
-            if '*' in core_path:
-                data['path_complete'] = False
+            # path incomplete means len(ttls) is not equal to the last ttl
+            data['path_complete'] = False
+            if len(data['ttls']) == data['ttls'][-1]:
+                data['path_complete'] = True
 
             # looping path contains at least one non-unique IP. it includes src and dest.
             core_path.append(data['src'])
