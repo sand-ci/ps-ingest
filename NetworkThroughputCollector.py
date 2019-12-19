@@ -1,28 +1,19 @@
 #!/usr/bin/env python
 
-import os
-
-try: 
-    import queue
-except ImportError:
-    import Queue as queue
-import socket
-import time
 import threading
 from threading import Thread
 import copy
 import json
-from datetime import datetime
 import hashlib
 
-import stomp
 import siteMapping
 import collector
+
 
 class NetworkThroughputCollector(collector.Collector):
 
     def __init__(self):
-        self.INDEX_PREFIX = 'ps_throughput-'
+        self.INDEX = 'ps_throughput_write'
         self.TOPIC = "/topic/perfsonar.raw.throughput"
         super(NetworkThroughputCollector, self).__init__()
 
@@ -32,9 +23,8 @@ class NetworkThroughputCollector(collector.Collector):
         """
         m = json.loads(message)
 
-        data = {
-            '_type': 'doc'
-        }
+        data = {}
+
         # print(m)
         source = m['meta']['source']
         destination = m['meta']['destination']
@@ -59,13 +49,12 @@ class NetworkThroughputCollector(collector.Collector):
             destination)
         if not 'datapoints'in m:
             print(threading.current_thread().name,
-                'no datapoints in this message!')
+                  'no datapoints in this message!')
             return
 
         su = m['datapoints']
         for ts, th in su.items():
-            dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month)  # + "." + str(dati.day)
+            data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
             sha1_hash = hashlib.sha1()
             sha1_hash.update(m['meta']['org_metadata_key'].encode())
@@ -74,7 +63,6 @@ class NetworkThroughputCollector(collector.Collector):
             data['throughput'] = th
             # print(data)
             self.aLotOfData.append(copy.copy(data))
-
 
 
 def main():

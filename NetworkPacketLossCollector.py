@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 
-import os
-import queue
-import socket
-import time
 import threading
 from threading import Thread
 import copy
 import json
-from datetime import datetime
 import hashlib
 
 import siteMapping

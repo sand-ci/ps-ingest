@@ -1,35 +1,27 @@
 #!/usr/bin/env python
 
-import os
-import queue
-import socket
-import time
 import threading
 from threading import Thread
 import copy
 import json
-from datetime import datetime
 import math
 import hashlib
 
 import siteMapping
 import collector
 
-class NetworkLatencyCollector(collector.Collector):
 
+class NetworkLatencyCollector(collector.Collector):
 
     def __init__(self):
         self.TOPIC = "/topic/perfsonar.raw.histogram-owdelay"
-        self.INDEX_PREFIX = 'ps_owd-'
-        return super().__init__()
-
-
+        self.INDEX = 'ps_owd_write'
+        super(NetworkLatencyCollector, self).__init__()
 
     def eventCreator(self, message):
-    
+
         m = json.loads(message)
         data = {
-            '_type': 'doc'
         }
 
         source = m['meta']['source']
@@ -54,8 +46,7 @@ class NetworkLatencyCollector(collector.Collector):
         data['dest_production'] = siteMapping.isProductionLatency(destination)
         su = m['datapoints']
         for ts, th in su.items():
-            dati = datetime.utcfromtimestamp(float(ts))
-            data['_index'] = self.es_index_prefix + self.INDEX_PREFIX + str(dati.year) + "." + str(dati.month) + "." + str(dati.day)
+            data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
             sha1_hash = hashlib.sha1()
             sha1_hash.update(m['meta']['org_metadata_key'].encode())
@@ -102,6 +93,6 @@ def main():
     collector = NetworkLatencyCollector()
     collector.start()
 
+
 if __name__ == "__main__":
     main()
-
