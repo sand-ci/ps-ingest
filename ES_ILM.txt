@@ -151,3 +151,16 @@ PUT ps_meta-000001
     }
   }
 }
+
+PUT ps_status-000001
+{
+  "settings": {
+    "index.lifecycle.name": "perfsonar",
+    "index.lifecycle.rollover_alias": "ps_status_write"
+  },
+  "aliases": {
+    "ps_status_write": {
+      "is_write_index": true
+    }
+  }
+}
