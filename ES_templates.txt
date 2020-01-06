@@ -290,7 +290,7 @@ POST /_template/perfsonar_telemetry
           "type" : "float"
         }
       }
-    },
+    }
 }
 
 
@@ -643,6 +643,30 @@ POST /_template/perfsonar_meta
         },
         "toolkit_version" : {
           "type" : "keyword"
+        }
+      }
+    }
+}
+
+POST /_template/perfsonar_status
+{
+  "index_patterns" : "ps_status-*",
+  "settings": {
+    "index": {
+      "lifecycle.name": "perfsonar",
+      "lifecycle.rollover_alias": "ps_status_write",
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
+    }
+  },
+  "aliases": {
+    "ps_status": {}
+  },
+  "mappings" : {
+      "properties" : {
+        "timestamp" : {
+          "type" : "date",
+          "format" : "basic_date_time_no_millis||epoch_millis"
         }
       }
     }
