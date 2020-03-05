@@ -671,3 +671,28 @@ POST /_template/perfsonar_status
       }
     }
 }
+
+
+POST /_template/esnet
+{
+  "index_patterns" : "esnet-*",
+  "settings": {
+    "index": {
+      "lifecycle.name": "esnet",
+      "lifecycle.rollover_alias": "esnet_write",
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
+    }
+  },
+  "aliases": {
+    "esnet": {}
+  },
+  "mappings" : {
+      "properties" : {
+        "timestamp" : {
+          "type" : "date",
+          "format" : "basic_date_time_no_millis||epoch_millis"
+        }
+      }
+    }
+}
