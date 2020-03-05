@@ -164,3 +164,16 @@ PUT ps_status-000001
     }
   }
 }
+
+PUT esnet-000001
+{
+  "settings": {
+    "index.lifecycle.name": "esnet",
+    "index.lifecycle.rollover_alias": "esnet_write"
+  },
+  "aliases": {
+    "esnet_write": {
+      "is_write_index": true
+    }
+  }
+}
