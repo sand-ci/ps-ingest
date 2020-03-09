@@ -692,7 +692,29 @@ POST /_template/esnet
         "timestamp" : {
           "type" : "date",
           "format" : "basic_date_time_no_millis||epoch_millis"
-        }
+        },        
+        "namespace": {"type": "keyword" },
+        "resource": {"type": "keyword" },        
+        "name": {"type": "keyword" },
+        "device": {"type": "keyword" },
+        "ifIndex": {"type": "integer" }, 
+        "description": {"type": "keyword" },
+        "speed": {"type": "integer" },
+        "vlan": {"type": "integer" },
+        "port": {"type": "keyword" },
+        "nokiaType": {"type": "keyword" },
+        "visibility": { "type": "keyword" },   
+        "connection": { "type": "keyword"},
+        "link": { "type": "keyword" },
+        "tags": {"type": "keyword"},
+        "sector": { "type": "keyword" },
+        "site": { "type": "keyword" },
+        "lhcone": { "type": "boolean" },
+        "oscars": { "type": "boolean" },
+        "intercloud": { "type": "boolean" },
+        "intracloud": { "type": "boolean" },
+        "remoteDevice": { "type": "keyword" },
+        "remotePort": { "type": "keyword" }
       }
     }
 }
