@@ -29,7 +29,7 @@ class EsNetCollector(collector.Collector):
         data['resource'] = m['resource']
         data['name'] = m['name']
         data['device'] = m['device']
-        data['index'] = m['ifIndex']
+        data['ifIndex'] = m['ifIndex']
         data['description'] = m['description']
         data['speed'] = m['speed']
         data['vlan'] = m['vlan']
