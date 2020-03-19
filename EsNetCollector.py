@@ -22,9 +22,6 @@ class EsNetCollector(collector.Collector):
         }
 
         data['_index'] = self.INDEX
-        # XXX here get stuff from the message and put it in data
-        # data['timestamp'] = int(float(ts) * 1000)
-        # data['MA'] = m['meta']
         data['namespace'] = m['namespace']
         data['resource'] = m['resource']
         data['name'] = m['name']
