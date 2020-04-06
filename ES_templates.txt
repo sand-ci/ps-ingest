@@ -673,26 +673,73 @@ POST /_template/perfsonar_status
 }
 
 
-POST /_template/esnet
+POST /_template/esnet_interfaces
 {
-  "index_patterns" : "esnet-*",
+  "index_patterns" : "esnet_interfaces-*",
   "settings": {
     "index": {
-      "lifecycle.name": "esnet",
-      "lifecycle.rollover_alias": "esnet_write",
+      "lifecycle.name": "esnet_interfaces",
+      "lifecycle.rollover_alias": "esnet_interfaces_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
     }
   },
   "aliases": {
-    "esnet": {}
+    "esnet_interfaces": {}
   },
   "mappings" : {
       "properties" : {
         "timestamp" : {
           "type" : "date",
           "format" : "basic_date_time_no_millis||epoch_millis"
-        }
+        },        
+        "namespace": {"type": "keyword" },
+        "resource": {"type": "keyword" },        
+        "name": {"type": "keyword" },
+        "device": {"type": "keyword" },
+        "ifIndex": {"type": "integer" }, 
+        "description": {"type": "keyword" },
+        "speed": {"type": "integer" },
+        "vlan": {"type": "integer" },
+        "port": {"type": "keyword" },
+        "nokiaType": {"type": "keyword" },
+        "visibility": { "type": "keyword" },   
+        "connection": { "type": "keyword"},
+        "link": { "type": "keyword" },
+        "tags": {"type": "keyword"},
+        "sector": { "type": "keyword" },
+        "site": { "type": "keyword" },
+        "lhcone": { "type": "boolean" },
+        "oscars": { "type": "boolean" },
+        "intercloud": { "type": "boolean" },
+        "intracloud": { "type": "boolean" },
+        "remoteDevice": { "type": "keyword" },
+        "remotePort": { "type": "keyword" }
       }
     }
+}
+
+POST /_template/esnet_traffic
+{
+  "index_patterns" : "esnet_traffic-*",
+  "settings": {
+    "index": {
+      "lifecycle.name": "esnet_traffic",
+      "lifecycle.rollover_alias": "esnet_traffic_write",
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
+    }
+  },
+  "aliases": {
+    "esnet_traffic": {}
+  },
+  "mappings" : {
+    "properties": {
+      "name": {"type": "keyword" },
+      "recordType": {"type": "keyword" },
+      "timestamp": { "type": "date", "format": "epoch_millis"},
+      "in": {"type": "integer"},
+      "out": {"type": "integer"}
+    }
+  }
 }
