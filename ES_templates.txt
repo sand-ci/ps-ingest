@@ -673,19 +673,19 @@ POST /_template/perfsonar_status
 }
 
 
-POST /_template/esnet
+POST /_template/esnet_interfaces
 {
-  "index_patterns" : "esnet-*",
+  "index_patterns" : "esnet_interfaces-*",
   "settings": {
     "index": {
       "lifecycle.name": "esnet",
-      "lifecycle.rollover_alias": "esnet_write",
+      "lifecycle.rollover_alias": "esnet_interfaces_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
     }
   },
   "aliases": {
-    "esnet": {}
+    "esnet_interfaces": {}
   },
   "mappings" : {
       "properties" : {
@@ -717,4 +717,29 @@ POST /_template/esnet
         "remotePort": { "type": "keyword" }
       }
     }
+}
+
+POST /_template/esnet_traffic
+{
+  "index_patterns" : "esnet_traffic-*",
+  "settings": {
+    "index": {
+      "lifecycle.name": "esnet",
+      "lifecycle.rollover_alias": "esnet_traffic_write",
+      "number_of_shards": "6",
+      "number_of_replicas": "1"
+    }
+  },
+  "aliases": {
+    "esnet_traffic": {}
+  },
+  "mappings" : {
+    "properties": {
+      "name": {"type": "keyword" },
+      "recordType": {"type": "keyword" },
+      "timestamp": { "type": "date", "format": "epoch_millis"},
+      "in": {"type": "integer"}
+      "out": {"type": "integer"}
+    }
+  }
 }
