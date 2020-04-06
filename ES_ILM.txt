@@ -165,14 +165,27 @@ PUT ps_status-000001
   }
 }
 
-PUT esnet-000001
+PUT esnet_traffic-000001
 {
   "settings": {
-    "index.lifecycle.name": "esnet",
-    "index.lifecycle.rollover_alias": "esnet_write"
+    "index.lifecycle.name": "esnet_traffic",
+    "index.lifecycle.rollover_alias": "esnet_interfaces_write"
   },
   "aliases": {
-    "esnet_write": {
+    "esnet_traffic_write": {
+      "is_write_index": true
+    }
+  }
+}
+
+PUT esnet_interfaces-000001
+{
+  "settings": {
+    "index.lifecycle.name": "esnet_interfaces",
+    "index.lifecycle.rollover_alias": "esnet_interfaces_write"
+  },
+  "aliases": {
+    "esnet_interfaces_write": {
       "is_write_index": true
     }
   }

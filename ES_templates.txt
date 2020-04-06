@@ -678,7 +678,7 @@ POST /_template/esnet_interfaces
   "index_patterns" : "esnet_interfaces-*",
   "settings": {
     "index": {
-      "lifecycle.name": "esnet",
+      "lifecycle.name": "esnet_interfaces",
       "lifecycle.rollover_alias": "esnet_interfaces_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
@@ -724,7 +724,7 @@ POST /_template/esnet_traffic
   "index_patterns" : "esnet_traffic-*",
   "settings": {
     "index": {
-      "lifecycle.name": "esnet",
+      "lifecycle.name": "esnet_traffic",
       "lifecycle.rollover_alias": "esnet_traffic_write",
       "number_of_shards": "6",
       "number_of_replicas": "1"
