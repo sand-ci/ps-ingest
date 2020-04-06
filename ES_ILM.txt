@@ -169,7 +169,7 @@ PUT esnet_traffic-000001
 {
   "settings": {
     "index.lifecycle.name": "esnet_traffic",
-    "index.lifecycle.rollover_alias": "esnet_interfaces_write"
+    "index.lifecycle.rollover_alias": "esnet_traffic_write"
   },
   "aliases": {
     "esnet_traffic_write": {

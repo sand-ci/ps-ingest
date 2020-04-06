@@ -738,7 +738,7 @@ POST /_template/esnet_traffic
       "name": {"type": "keyword" },
       "recordType": {"type": "keyword" },
       "timestamp": { "type": "date", "format": "epoch_millis"},
-      "in": {"type": "integer"}
+      "in": {"type": "integer"},
       "out": {"type": "integer"}
     }
   }
