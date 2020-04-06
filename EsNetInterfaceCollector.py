@@ -8,11 +8,11 @@ import math
 import collector
 
 
-class EsNetCollector(collector.Collector):
+class EsNetInterfaceCollector(collector.Collector):
 
     def __init__(self):
-        self.TOPIC = "/topic/XXX"
-        self.INDEX = 'esnet_write'
+        self.TOPIC = "/topic/esnet_interfaces"
+        self.INDEX = 'esnet_interfaces_write'
         super(EsNetCollector, self).__init__()
 
     def eventCreator(self, message):
