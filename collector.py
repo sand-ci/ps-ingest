@@ -154,7 +154,6 @@ class Collector(object):
             vhost=self.RMQ_parameters['RMQ_VHOST']
         )
         self.connection.set_listener('MyConsumer', Collector.MyListener(self.q, self))
-        self.connection.start()
         self.connection.connect(self.RMQ_parameters['RMQ_USER'], self.RMQ_parameters['RMQ_PASS'], wait=True, heartbeats=(10000, 10000))
         self.connection.subscribe(destination=self.TOPIC, ack='client', id=self.RMQ_parameters['RMQ_ID'], headers={"durable": True, "auto-delete": False, 'prefetch-count': 1024})
 
