@@ -13,7 +13,7 @@ class EsNetTrafficCollector(collector.Collector):
     def __init__(self):
         self.TOPIC = "/topic/esnet_traffic"
         self.INDEX = 'esnet_traffic_write'
-        super(EsNetCollector, self).__init__()
+        super(EsNetTrafficCollector, self).__init__()
 
     def eventCreator(self, message):
 
@@ -33,7 +33,7 @@ class EsNetTrafficCollector(collector.Collector):
 
 
 def main():
-    collector = EsNetCollector()
+    collector = EsNetTrafficCollector()
     collector.start()
 
 
