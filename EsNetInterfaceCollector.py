@@ -13,7 +13,7 @@ class EsNetInterfaceCollector(collector.Collector):
     def __init__(self):
         self.TOPIC = "/topic/esnet_interfaces"
         self.INDEX = 'esnet_interfaces_write'
-        super(EsNetCollector, self).__init__()
+        super(EsNetInterfaceCollector, self).__init__()
 
     def eventCreator(self, message):
 
@@ -49,7 +49,7 @@ class EsNetInterfaceCollector(collector.Collector):
 
 
 def main():
-    collector = EsNetCollector()
+    collector = EsNetInterfaceCollector()
     collector.start()
 
 
