@@ -44,6 +44,7 @@ class EsNetInterfaceCollector(collector.Collector):
         data['intracloud'] = m['intracloud']
         data['remoteDevice'] = m['remoteDevice']
         data['remotePort'] = m['remotePort']
+        data['timestamp'] = m['timestamp']        
 
         self.aLotOfData.append(copy.copy(data))
 
