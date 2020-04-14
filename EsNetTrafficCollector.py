@@ -27,7 +27,9 @@ class EsNetTrafficCollector(collector.Collector):
         # data['MA'] = m['meta']
         data['name'] = m['name']
         data['recordType'] = m['recordType']
-        data['points'] = m['points']
+        data['timestamp'] = m['timestamp']
+        data['in'] = m['in']
+        data['out'] = m['out']
 
         self.aLotOfData.append(copy.copy(data))
 
