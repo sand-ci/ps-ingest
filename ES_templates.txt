@@ -697,10 +697,10 @@ POST /_template/esnet_interfaces
         "resource": {"type": "keyword" },        
         "name": {"type": "keyword" },
         "device": {"type": "keyword" },
-        "ifIndex": {"type": "integer" }, 
+        "ifIndex": {"type": "long" }, 
         "description": {"type": "keyword" },
-        "speed": {"type": "integer" },
-        "vlan": {"type": "integer" },
+        "speed": {"type": "long" },
+        "vlan": {"type": "long" },
         "port": {"type": "keyword" },
         "nokiaType": {"type": "keyword" },
         "visibility": { "type": "keyword" },   
@@ -738,8 +738,8 @@ POST /_template/esnet_traffic
       "name": {"type": "keyword" },
       "recordType": {"type": "keyword" },
       "timestamp": { "type": "date", "format": "epoch_millis"},
-      "in": {"type": "integer"},
-      "out": {"type": "integer"}
+      "in": {"type": "long"},
+      "out": {"type": "long"}
     }
   }
 }
