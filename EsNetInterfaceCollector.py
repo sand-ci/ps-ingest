@@ -6,7 +6,7 @@ import copy
 import json
 import math
 import collector
-
+import hashlib
 
 class EsNetInterfaceCollector(collector.Collector):
 
@@ -44,7 +44,9 @@ class EsNetInterfaceCollector(collector.Collector):
         data['intracloud'] = m['intracloud']
         data['remoteDevice'] = m['remoteDevice']
         data['remotePort'] = m['remotePort']
-        data['timestamp'] = m['timestamp']        
+        data['timestamp'] = m['timestamp']
+        sha1_hash = hashlib.sha1()
+        data['_id'] = sha1_hash.hexdigest()        
 
         self.aLotOfData.append(copy.copy(data))
 
