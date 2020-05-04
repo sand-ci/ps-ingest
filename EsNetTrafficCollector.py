@@ -31,6 +31,9 @@ class EsNetTrafficCollector(collector.Collector):
         data['in'] = m['in']
         data['out'] = m['out']
         sha1_hash = hashlib.sha1()
+        sha1_hash.update(str(data['name']).encode())
+        sha1_hash.update(str(data['recordType']).encode())
+        sha1_hash.update(str(data['timestamp']).encode())
         data['_id'] = sha1_hash.hexdigest()       
  
         self.aLotOfData.append(copy.copy(data))
