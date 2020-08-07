@@ -112,7 +112,7 @@ def reload():
         res = r.json()
         # print('whole json:', res)
         sites = []
-        for key, val in res.items():
+        for _key, val in res.items():
             sites.append(val["rc_site"])
         # print('Sites reloaded.')
     except:
@@ -123,8 +123,8 @@ def reload():
         r = requests.get(
             'https://atlas-cric.cern.ch/api/core/service/query/?json&state=ACTIVE&type=PerfSonar', verify=False)
         res = r.json()
-        for key, val in res.items():
-            # print(key, val)
+        for _key, val in res.items():
+            # print(_key, val)
             p = ps()
             p.hostname = val['endpoint']
             if val['status'] == 'production':
