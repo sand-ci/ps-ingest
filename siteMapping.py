@@ -25,6 +25,7 @@ latencyHosts = []
 GOCDB_FEED = "https://goc.egi.eu/gocdbpi/public/?method=get_service_endpoint"
 OIM_FEED = "https://my.opensciencegrid.org/rgsummary/xml?summary_attrs_showservice=on&summary_attrs_showfqdn=on&gip_status_attrs_showtestresults=on&downtime_attrs_showpast=&account_type=cumulative_hours&ce_account_type=gip_vo&se_account_type=vo_transfer_volume&bdiitree_type=total_jobs&bdii_object=service&bdii_server=is-osg&start_type=7daysago&start_date=11%2F17%2F2014&end_type=now&all_resources=on&facility_sel%5B%5D=10009&gridtype=on&gridtype_1=on&active=on&active_value=1&disable_value=0"
 
+
 class ps:
     hostname = ''
     sitename = ''
@@ -33,12 +34,14 @@ class ps:
     flavor = ''
 
     def prnt(self):
-        print('ip:', self.ip, '\thost:', self.hostname, '\tVO:', self.VO, '\tflavor:', self.flavor, '\tsite:', self.sitename)
+        print('ip:', self.ip, '\thost:', self.hostname, '\tVO:', self.VO,
+              '\tflavor:', self.flavor, '\tsite:', self.sitename)
 
 
 def request(url, hostcert=None, hostkey=None, verify=False):
     if hostcert and hostkey:
-        req = requests.get(url, verify=verify, timeout=120, cert=(hostcert, hostkey))
+        req = requests.get(url, verify=verify, timeout=120,
+                           cert=(hostcert, hostkey))
     else:
         req = requests.get(url, timeout=120, verify=verify)
     req.raise_for_status()
@@ -101,29 +104,33 @@ def reload():
     timeout = 60
     socket.setdefaulttimeout(timeout)
 
-    ot = time.time() - 86300  # in case it does not succeed in updating it will try again in 100 seconds.
+    # in case it does not succeed in updating it will try again in 100 seconds.
+    ot = time.time() - 86300
     try:
-        r = requests.get('http://atlas-agis-api.cern.ch/request/site/query/list/?json&vo_name=atlas&state=ACTIVE')
+        r = requests.get(
+            'https://atlas-cric.cern.ch/api/core/site/query/?json&vo_name=atlas&state=ACTIVE', verify=False)
         res = r.json()
+        # print('whole json:', res)
         sites = []
-        for s in res:
-            sites.append(s["rc_site"])
-        # print(res)
-        print('Sites reloaded.')
+        for key, val in res.items():
+            sites.append(val["rc_site"])
+        # print('Sites reloaded.')
     except:
-        print("Could not get sites from AGIS. Exiting...")
+        print("Could not get sites from CRIC. Exiting...")
         print("Unexpected error: ", str(sys.exc_info()[0]))
 
     try:
-        r = requests.get('http://atlas-agis-api.cern.ch/request/service/query/list/?json&state=ACTIVE&type=PerfSonar')
+        r = requests.get(
+            'https://atlas-cric.cern.ch/api/core/service/query/?json&state=ACTIVE&type=PerfSonar', verify=False)
         res = r.json()
-        for s in res:
+        for key, val in res.items():
+            # print(key, val)
             p = ps()
-            p.hostname = s['endpoint']
-            if s['status'] == 'production':
+            p.hostname = val['endpoint']
+            if val['status'] == 'production':
                 p.production = True
-            p.flavor = s['flavour']
-            p.sitename = s['rc_site']
+            p.flavor = val['flavour']
+            p.sitename = val['rcsite']
             if p.sitename in sites:
                 p.VO = "ATLAS"
             ips = getIP(p.hostname)
@@ -133,17 +140,18 @@ def reload():
             for ip in ips:
                 if ':' in ip[4][0]:
                     try:
-                        PerfSonars[ipaddress.IPv6Address(ip[4][0]).exploded] = p
+                        PerfSonars[ipaddress.IPv6Address(
+                            ip[4][0]).exploded] = p
                     except ipaddress.AddressValueError:
                         print('Failed to parse IPv6 address:', ip)
                         continue
                 else:
                     PerfSonars[ip[4][0]] = p
-            sites.append(s["rc_site"])
+            sites.append(val["rcsite"])
             p.prnt()
         print('Perfsonars reloaded.')
     except:
-        print("Could not get perfsonars from AGIS. Exiting...")
+        print("Could not get perfsonars from CRIC. Exiting...")
         print("Unexpected error: ", str(sys.exc_info()[0]))
 
     # gocdb/oim processing =============================
@@ -172,7 +180,8 @@ def reload():
             for ip in ips:
                 if ':' in ip[4][0]:
                     try:
-                        PerfSonars[ipaddress.IPv6Address(ip[4][0]).exploded] = p
+                        PerfSonars[ipaddress.IPv6Address(
+                            ip[4][0]).exploded] = p
                     except ipaddress.AddressValueError:
                         print('Failed to parse IPv6 address:', ip)
                         continue
@@ -186,7 +195,8 @@ def reload():
     # loading meshes ===================================
 
     try:
-        r = requests.get('http://psconfig.opensciencegrid.org/pub/config/', verify=False, timeout=10)
+        r = requests.get(
+            'http://psconfig.opensciencegrid.org/pub/config/', verify=False, timeout=10)
         res = r.json()
         for r in res:
             inc = r['include'][0]
