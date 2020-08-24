@@ -10,6 +10,7 @@ import traceback
 from elasticsearch import Elasticsearch, exceptions as es_exceptions
 from elasticsearch import helpers
 from datetime import datetime
+import urllib3.exceptions
 
 try: 
     import queue
@@ -165,8 +166,7 @@ class Collector(object):
         while True:
             try:
                 if 'ES_USER' in os.environ and 'ES_PASS' in os.environ and 'ES_HOST' in os.environ:
-                    self.es_conn = Elasticsearch(
-                        [{'host': os.environ['ES_HOST'], 'port': 9200}],
+                    self.es_conn = Elasticsearch([os.environ['ES_HOST']]
                         http_auth=(os.environ['ES_USER'], os.environ['ES_PASS'])
                     )
                 else:
@@ -202,6 +202,8 @@ class Collector(object):
         except Exception as e:
             traceback.print_exc()
             print('Something seriously wrong happened.')
+            # Reset the ES connection
+            self.es_conn = None
         return success
 
 
