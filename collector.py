@@ -166,7 +166,7 @@ class Collector(object):
         while True:
             try:
                 if 'ES_USER' in os.environ and 'ES_PASS' in os.environ and 'ES_HOST' in os.environ:
-                    self.es_conn = Elasticsearch([os.environ['ES_HOST']]
+                    self.es_conn = Elasticsearch([os.environ['ES_HOST']],
                         http_auth=(os.environ['ES_USER'], os.environ['ES_PASS'])
                     )
                 else:
