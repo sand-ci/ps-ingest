@@ -53,10 +53,7 @@ class NetworkRetransmitsCollector(collector.Collector):
         for ts, th in su.items():
             data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
-            sha1_hash = hashlib.sha1()
-            sha1_hash.update(m['meta']['org_metadata_key'].encode())
-            sha1_hash.update(str(data['timestamp']).encode())
-            data['_id'] = sha1_hash.hexdigest()
+            data['_id'] = self.calculateId(m, data['timestamp'])
             data['retransmits'] = th
             # print(data)
             self.aLotOfData.append(copy.copy(data))

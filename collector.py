@@ -11,6 +11,7 @@ from elasticsearch import Elasticsearch, exceptions as es_exceptions
 from elasticsearch import helpers
 from datetime import datetime
 import urllib3.exceptions
+import hashlib
 
 try: 
     import queue
@@ -220,6 +221,31 @@ class Collector(object):
         return ret
 
 
+    def calculateId(self, message, timestamp):
+        """
+        Calculate the Id from the message and return it.
 
+        Version 1 (or no version):
+        - timestamp
+        - org_metadata_key
+
+        Version 2:
+        - timestamp
+        - source
+        - dest
+        - test type
+        """
+        if 'version' in message and message['version'] == "2": # Should we use a semvar library?
+            sha1_hash = hashlib.sha1()
+            sha1_hash.update(message['meta']['source'].encode('utf-8'))
+            sha1_hash.update(message['meta']['destination'].encode('utf-8'))
+            sha1_hash.update(self.TOPIC.encode('utf-8'))
+            sha1_hash.update(str(timestamp).encode('utf-8'))
+            return sha1_hash.hexdigest()
+        else:
+            sha1_hash = hashlib.sha1()
+            sha1_hash.update(message['meta']['org_metadata_key'].encode())
+            sha1_hash.update(str(timestamp).encode())
+            return sha1_hash.hexdigest()
 
 
