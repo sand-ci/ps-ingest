@@ -54,7 +54,7 @@ class NetworkTracerouteCollector(collector.Collector):
         for ts in dp:
             data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
-            data['_id'] = self.calculateId(m, str(data['timestamp']))
+            data['_id'] = self.calculateId(m, data['timestamp'])
             data['hops'] = []
             data['asns'] = []
             data['rtts'] = []

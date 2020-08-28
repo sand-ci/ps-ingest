@@ -50,7 +50,7 @@ class NetworkMLTelementryCollector(collector.Collector):
                 for r in results:
                     data['_index'] = self.INDEX
                     data['timestamp'] = r[0] * 1000
-                    data['_id'] = self.calculateId(m, str(data['timestamp']))
+                    data['_id'] = self.calculateId(m, data['timestamp'])
                     data['sim_util'] = r[1]['ml']
             # print(data)
             self.aLotOfData.append(copy.copy(data))
