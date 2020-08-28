@@ -53,7 +53,7 @@ class NetworkRetransmitsCollector(collector.Collector):
         for ts, th in su.items():
             data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
-            data['_id'] = self.calculateId(m, str(ts))
+            data['_id'] = self.calculateId(m, str(data['timestamp']))
             data['retransmits'] = th
             # print(data)
             self.aLotOfData.append(copy.copy(data))

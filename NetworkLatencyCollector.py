@@ -48,7 +48,7 @@ class NetworkLatencyCollector(collector.Collector):
         for ts, th in su.items():
             data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
-            data['_id'] = self.calculateId(m, str(ts))
+            data['_id'] = self.calculateId(m, str(data['timestamp']))
 
             th_fl = dict((float(k), v) for (k, v) in th.items())
 
