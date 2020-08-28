@@ -50,10 +50,7 @@ class NetworkMLTelementryCollector(collector.Collector):
                 for r in results:
                     data['_index'] = self.INDEX
                     data['timestamp'] = r[0] * 1000
-                    sha1_hash = hashlib.sha1()
-                    sha1_hash.update(m['meta']['org_metadata_key'].encode())
-                    sha1_hash.update(str(data['timestamp']).encode())
-                    data['_id'] = sha1_hash.hexdigest()
+                    data['_id'] = self.calculateId(m, str(r[0]))
                     data['sim_util'] = r[1]['ml']
             # print(data)
             self.aLotOfData.append(copy.copy(data))

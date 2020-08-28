@@ -48,10 +48,7 @@ class NetworkLatencyCollector(collector.Collector):
         for ts, th in su.items():
             data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
-            sha1_hash = hashlib.sha1()
-            sha1_hash.update(m['meta']['org_metadata_key'].encode())
-            sha1_hash.update(str(ts).encode())
-            data['_id'] = sha1_hash.hexdigest()
+            data['_id'] = self.calculateId(m, str(ts))
 
             th_fl = dict((float(k), v) for (k, v) in th.items())
 

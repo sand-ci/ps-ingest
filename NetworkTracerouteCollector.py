@@ -54,10 +54,7 @@ class NetworkTracerouteCollector(collector.Collector):
         for ts in dp:
             data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
-            sha1_hash = hashlib.sha1()
-            sha1_hash.update(m['meta']['org_metadata_key'].encode())
-            sha1_hash.update(str(data['timestamp']).encode())
-            data['_id'] = sha1_hash.hexdigest()
+            data['_id'] = self.calculateId(m, str(ts))
             data['hops'] = []
             data['asns'] = []
             data['rtts'] = []
