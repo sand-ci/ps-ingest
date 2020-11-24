@@ -166,12 +166,18 @@ class Collector(object):
         print("make sure we are connected to ES...")
         while True:
             try:
-                if 'ES_USER' in os.environ and 'ES_PASS' in os.environ and 'ES_HOST' in os.environ:
-                    self.es_conn = Elasticsearch([os.environ['ES_HOST']],
-                        http_auth=(os.environ['ES_USER'], os.environ['ES_PASS'])
-                    )
+                es_host = None
+                http_auth = None
+                if 'ES_HOST' in os.environ:
+                    es_host = os.environ["ES_HOST"]
                 else:
-                    self.es_conn = Elasticsearch([{'host': 'atlas-kibana.mwt2.org', 'port': 9200}])
+                    es_host = "atlas-kibana.mwt2.org:9200"
+
+                if 'ES_USER' in os.environ and 'ES_PASS' in os.environ:
+                    http_auth = (os.environ['ES_USER'], os.environ['ES_PASS'])
+                    self.es_conn = Elasticsearch([es_host], http_auth=http_auth)
+                else:
+                    self.es_conn = Elasticsearch([es_host])
                 print("connected OK!")
             except es_exceptions.ConnectionError as error:
                 print('ConnectionError in get_es_connection: ', error)
@@ -235,7 +241,7 @@ class Collector(object):
         - dest
         - test type
         """
-        if 'version' in message and message['version'] == "2": # Should we use a semvar library?
+        if 'version' in message and message['version'] == 2: # Should we use a semvar library?
             sha1_hash = hashlib.sha1()
             sha1_hash.update(message['meta']['source'].encode('utf-8'))
             sha1_hash.update(message['meta']['destination'].encode('utf-8'))
