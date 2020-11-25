@@ -28,6 +28,7 @@ class NetworkThroughputCollector(collector.Collector):
         # print(m)
         source = m['meta']['source']
         destination = m['meta']['destination']
+        data['push'] = m['push'] if 'push' in m else False
         data['MA'] = m['meta']['measurement_agent']
         data['src'] = source
         data['dest'] = destination
