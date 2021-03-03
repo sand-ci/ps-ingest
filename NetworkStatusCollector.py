@@ -22,7 +22,7 @@ class NetworkStatusCollector(collector.Collector):
         data = {}
 
         metrics = ['perfSONAR services: ntp', 'perfSONAR esmond freshness', 'OSG datastore freshness',
-                   'perfSONAR services: pscheduler']
+                   'perfSONAR services: pscheduler stats']
         found = False
         for met in metrics:
             if not met in m['metric']:
