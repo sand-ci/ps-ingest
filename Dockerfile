@@ -16,10 +16,9 @@ ADD . /.
 
 # setup supervisord
 RUN mkdir -p /var/log/supervisor
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY supervisord.cern.conf /etc/supervisor/conf.d/supervisord.cern.conf
+COPY supervisord.d/* /etc/supervisor/conf.d/
 
 # build info
 RUN echo "Timestamp:" `date --utc` | tee /image-build-info.txt
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf", "-n"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf", "-n"]
