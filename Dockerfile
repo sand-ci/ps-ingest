@@ -3,7 +3,8 @@ FROM python:3
 
 LABEL maintainer Ilija Vukotic <ivukotic@cern.ch>
 
-RUN apk update && apk add supervisor git ca-certificates && rm -rf /var/cache/apk/*
+# RUN apk update && apk add supervisor git ca-certificates && rm -rf /var/cache/apk/*
+RUN apt-get install -y supervisor git ca-certificates
 
 ADD requirements.txt /.
 RUN pip install -r requirements.txt
