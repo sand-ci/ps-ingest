@@ -13,12 +13,13 @@ from datetime import datetime
 import urllib3.exceptions
 import hashlib
 
-try: 
+try:
     import queue
 except ImportError:
     import Queue as queue
 
 import siteMapping
+
 
 class Collector(object):
 
@@ -63,12 +64,11 @@ class Collector(object):
         self.t.daemon = True
         self.t.start()
 
-
         while True:
             self.connect_to_MQ()
             time.sleep(55)
-            print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "threads:", threading.active_count(), "qsize:", self.q.qsize())
-
+            print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "threads:",
+                  threading.active_count(), "qsize:", self.q.qsize())
 
     def watchMessages(self):
         """
@@ -82,7 +82,7 @@ class Collector(object):
                 # Try to flush the data
                 self.flushData()
                 continue
-            
+
             try:
                 self.eventCreator(msg)
             except Exception as e:
@@ -96,7 +96,6 @@ class Collector(object):
             self.flushData()
             self.q.task_done()
 
-
     def flushData(self):
         """
         Flush the data, if it's time
@@ -104,7 +103,8 @@ class Collector(object):
         if self.aLotOfData is None or len(self.aLotOfData) == 0:
             if self.msg_counter > 100 or (time.time() - self.last_flush) > 10:
                 if self.last_headers:
-                    self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
+                    self.connection.ack(
+                        self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
                     self.last_headers = None
                 self.last_flush = time.time()
                 self.msg_counter = 0
@@ -113,11 +113,13 @@ class Collector(object):
         if len(self.aLotOfData) > 100 or (time.time() - self.last_flush) > 10 or self.msg_counter > 100:
             success = False
             while not success:
-                success = self.bulk_index(self.aLotOfData, es_conn=None, thread_name=threading.current_thread().name)
+                success = self.bulk_index(self.aLotOfData, es_conn=None,
+                                          thread_name=threading.current_thread().name)
                 if success is True:
                     self.aLotOfData = []
                     if self.last_headers:
-                        self.connection.ack(self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
+                        self.connection.ack(
+                            self.last_headers['message-id'], self.RMQ_parameters['RMQ_ID'])
                         self.last_headers = None
                     self.last_flush = time.time()
                     self.msg_counter = 0
@@ -125,9 +127,6 @@ class Collector(object):
                 else:
                     print("Unable to post to ES")
                     time.sleep(10)
-                
-
-
 
     def eventCreator(self):
         pass
@@ -155,9 +154,12 @@ class Collector(object):
             use_ssl=True,
             vhost=self.RMQ_parameters['RMQ_VHOST']
         )
+        # self.connection.set_ssl()
         self.connection.set_listener('MyConsumer', Collector.MyListener(self.q, self))
-        self.connection.connect(self.RMQ_parameters['RMQ_USER'], self.RMQ_parameters['RMQ_PASS'], wait=True, heartbeats=(10000, 10000))
-        self.connection.subscribe(destination=self.TOPIC, ack='client', id=self.RMQ_parameters['RMQ_ID'], headers={"durable": True, "auto-delete": False, 'prefetch-count': 1024})
+        self.connection.connect(
+            self.RMQ_parameters['RMQ_USER'], self.RMQ_parameters['RMQ_PASS'], wait=True, heartbeats=(10000, 10000))
+        self.connection.subscribe(destination=self.TOPIC, ack='client', id=self.RMQ_parameters['RMQ_ID'], headers={
+                                  "durable": True, "auto-delete": False, 'prefetch-count': 1024})
 
     def get_es_connection(self):
         """
@@ -187,7 +189,6 @@ class Collector(object):
                 return self.es_conn
             time.sleep(70)
 
-
     def bulk_index(self, data, es_conn=None, thread_name=''):
         """
         sends the data to ES for indexing.
@@ -213,7 +214,6 @@ class Collector(object):
             self.es_conn = None
         return success
 
-
     def get_RMQ_connection_parameters(self):
         """ read vhost, user, pass from the environment """
         ret = {'RMQ_VHOST': '', 'RMQ_USER': '', 'RMQ_PASS': '', 'RMQ_ID': ''}
@@ -225,7 +225,6 @@ class Collector(object):
                 print('environment variable', var, 'not defined. Exiting.')
                 sys.exit(1)
         return ret
-
 
     def calculateId(self, message, timestamp):
         """
@@ -241,7 +240,7 @@ class Collector(object):
         - dest
         - test type
         """
-        if 'version' in message and message['version'] == 2: # Should we use a semvar library?
+        if 'version' in message and message['version'] == 2:  # Should we use a semvar library?
             sha1_hash = hashlib.sha1()
             sha1_hash.update(message['meta']['source'].encode('utf-8'))
             sha1_hash.update(message['meta']['destination'].encode('utf-8'))
@@ -253,5 +252,3 @@ class Collector(object):
             sha1_hash.update(message['meta']['org_metadata_key'].encode())
             sha1_hash.update(str(timestamp).encode())
             return sha1_hash.hexdigest()
-
-
