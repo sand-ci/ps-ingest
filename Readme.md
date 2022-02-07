@@ -1,3 +1,5 @@
+[![Build and Push PS collector image to Harbor](https://github.com/sand-ci/ps-ingest/actions/workflows/harbor.yaml/badge.svg)](https://github.com/sand-ci/ps-ingest/actions/workflows/harbor.yaml)
+
 ## PerfSONAR Collector
 
 It consists of 9 separate collectors each subscribing to one RabbitMQ topic, parses data, and sends it to Elasticsearch.
