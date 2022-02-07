@@ -33,4 +33,4 @@ jobs:
         uses: docker/build-push-action@v2.2.0
         with:
           push: true
-          tags: hub.opensciencegrid.org/usatlas/ps-collector:latest
+          tags: hub.opensciencegrid.org/usatlas/ps-ingest:latest
