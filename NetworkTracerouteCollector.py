@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import copy
 import json
 import threading
@@ -14,7 +15,7 @@ class NetworkTracerouteCollector(collector.Collector):
     def __init__(self):
 
         self.TOPIC = "/topic/perfsonar.raw.packet-trace"
-        self.INDEX = 'ps_trace_write'
+        self.INDEX = 'ps_trace_'
         super(NetworkTracerouteCollector, self).__init__()
 
     def eventCreator(self, message):
@@ -37,23 +38,23 @@ class NetworkTracerouteCollector(collector.Collector):
             data['ipv6'] = True
         so = siteMapping.getPS(source)
         de = siteMapping.getPS(destination)
-        if so != None:
+        if so is not None:
             data['src_site'] = so[0]
             data['src_VO'] = so[1]
-        if de != None:
+        if de is not None:
             data['dest_site'] = de[0]
             data['dest_VO'] = de[1]
         data['src_production'] = siteMapping.isProductionThroughput(source)
         data['dest_production'] = siteMapping.isProductionThroughput(
             destination)
-        if not 'datapoints' in m:
+        if 'datapoints' not in m:
             print(threading.current_thread().name,
                   "no datapoints found in the message")
             return
         dp = m['datapoints']
         # print(su)
         for ts in dp:
-            data['_index'] = self.INDEX
+            data['_index'] = self.INDEX+datetime.fromtimestamp(data['timestamp']).strftime("%Y-%m")
             data['timestamp'] = int(float(ts) * 1000)
             data['_id'] = self.calculateId(m, data['timestamp'])
             data['hops'] = []
@@ -69,7 +70,7 @@ class NetworkTracerouteCollector(collector.Collector):
                     continue
                 data['hops'].append(hop['ip'])
                 data['ttls'].append(int(hop['ttl']))
-                if 'rtt' in hop and hop['rtt'] != None:
+                if 'rtt' in hop and hop['rtt'] is not None:
                     data['rtts'].append(float(hop['rtt']))
                 else:
                     data['rtts'].append(0.0)
