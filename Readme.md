@@ -1,4 +1,4 @@
-[![Build and Push PS collector image to Harbor](https://github.com/sand-ci/ps-ingest/actions/workflows/harbor.yaml/badge.svg)](https://github.com/sand-ci/ps-ingest/actions/workflows/harbor.yaml)
+[![Build and push PS collector image to DockerHub](https://github.com/sand-ci/ps-ingest/actions/workflows/main.yaml/badge.svg)](https://github.com/sand-ci/ps-ingest/actions/workflows/main.yaml) [![Build and Push PS collector image to Harbor](https://github.com/sand-ci/ps-ingest/actions/workflows/harbor.yaml/badge.svg)](https://github.com/sand-ci/ps-ingest/actions/workflows/harbor.yaml)
 
 ## PerfSONAR Collector
 
