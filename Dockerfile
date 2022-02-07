@@ -1,4 +1,5 @@
-FROM python:3-alpine3.7
+FROM python:3
+#-alpine3.7
 
 LABEL maintainer Ilija Vukotic <ivukotic@cern.ch>
 
