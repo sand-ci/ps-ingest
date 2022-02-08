@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import threading
-from threading import Thread
+# import threading
+# from threading import Thread
 import copy
 import json
 import math
-import hashlib
+# import hashlib
 
 import siteMapping
 import collector
@@ -34,6 +34,7 @@ class NetworkLatencyCollector(collector.Collector):
         except KeyError as e:
             print('an important field is missing:', e.args[0])
             print('full message:', m)
+            return
 
         data['src'] = source
         data['dest'] = destination
@@ -52,6 +53,12 @@ class NetworkLatencyCollector(collector.Collector):
         data['src_production'] = siteMapping.isProductionLatency(source)
         data['dest_production'] = siteMapping.isProductionLatency(destination)
         for ts, th in su.items():
+
+            if len(th) == 0:
+                print('empty measurement.')
+                print(data)
+                continue
+
             data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
             data['_id'] = self.calculateId(m, data['timestamp'])
