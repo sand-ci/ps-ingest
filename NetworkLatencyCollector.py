@@ -23,20 +23,26 @@ class NetworkLatencyCollector(collector.Collector):
         m = json.loads(message)
         data = {
         }
+        try:
+            source = m['meta']['source']
+            destination = m['meta']['destination']
+            data['push'] = m['meta']['push'] if 'push' in m['meta'] else False
+            data['MA'] = m['meta']['measurement_agent']
+            data['src_host'] = m['meta']['input_source']
+            data['dest_host'] = m['meta']['input_destination']
+            su = m['datapoints']
+        except KeyError as e:
+            print('an important field is missing:', e.args[0])
+            print('full message:', m)
 
-        source = m['meta']['source']
-        destination = m['meta']['destination']
-        data['push'] = m['meta']['push'] if 'push' in m['meta'] else False
-        data['MA'] = m['meta']['measurement_agent']
         data['src'] = source
         data['dest'] = destination
-        data['src_host'] = m['meta']['input_source']
-        data['dest_host'] = m['meta']['input_destination']
         data['ipv6'] = False
         if ':' in source or ':' in destination:
             data['ipv6'] = True
         so = siteMapping.getPS(source)
         de = siteMapping.getPS(destination)
+
         if so is not None:
             data['src_site'] = so[0]
             data['src_VO'] = so[1]
@@ -45,7 +51,6 @@ class NetworkLatencyCollector(collector.Collector):
             data['dest_VO'] = de[1]
         data['src_production'] = siteMapping.isProductionLatency(source)
         data['dest_production'] = siteMapping.isProductionLatency(destination)
-        su = m['datapoints']
         for ts, th in su.items():
             data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
@@ -58,7 +63,8 @@ class NetworkLatencyCollector(collector.Collector):
             th_mean = sum(k * v for k, v in th_fl.items()) / samples
             data['delay_mean'] = th_mean
             # std dev
-            data['delay_sd'] = math.sqrt(sum((k - th_mean) ** 2 * v for k, v in th_fl.items()) / samples)
+            data['delay_sd'] = math.sqrt(
+                sum((k - th_mean) ** 2 * v for k, v in th_fl.items()) / samples)
             # median
             csum = 0
             ordered_th = [(k, v) for k, v in sorted(th_fl.items())]
