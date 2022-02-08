@@ -54,7 +54,8 @@ class NetworkTracerouteCollector(collector.Collector):
         dp = m['datapoints']
         # print(su)
         for ts in dp:
-            data['_index'] = self.INDEX+datetime.fromtimestamp(data['timestamp']).strftime("%Y-%m")
+            data['_index'] = self.INDEX + \
+                datetime.date.fromtimestamp(data['timestamp']).strftime("%Y-%m")
             data['timestamp'] = int(float(ts) * 1000)
             data['_id'] = self.calculateId(m, data['timestamp'])
             data['hops'] = []
