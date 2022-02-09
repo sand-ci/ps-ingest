@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import threading
-from threading import Thread
+# import threading
+# from threading import Thread
 import copy
 import json
 
-import siteMapping
+# import siteMapping
 import collector
 
 
@@ -25,7 +25,7 @@ class NetworkStatusCollector(collector.Collector):
                    'perfSONAR services: pscheduler stats']
         found = False
         for met in metrics:
-            if not met in m['metric']:
+            if met not in m['metric']:
                 continue
             found = True
         if not found:

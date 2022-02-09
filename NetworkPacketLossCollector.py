@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import threading
-from threading import Thread
+# import threading
+# from threading import Thread
 import copy
 import json
-import hashlib
+# import hashlib
 
 import siteMapping
 import collector
@@ -24,14 +24,21 @@ class NetworkPacketLossCollector(collector.Collector):
         data = {
         }
 
-        source = m['meta']['source']
-        destination = m['meta']['destination']
-        data['push'] = m['meta']['push'] if 'push' in m['meta'] else False
-        data['MA'] = m['meta']['measurement_agent']
+        try:
+            source = m['meta']['source']
+            destination = m['meta']['destination']
+            data['push'] = m['meta']['push'] if 'push' in m['meta'] else False
+            data['MA'] = m['meta']['measurement_agent']
+            data['src_host'] = m['meta']['input_source']
+            data['dest_host'] = m['meta']['input_destination']
+            su = m['datapoints']
+        except KeyError as e:
+            print('an important field is missing:', e.args[0])
+            print('full message:', m)
+            return
+
         data['src'] = source
         data['dest'] = destination
-        data['src_host'] = m['meta']['input_source']
-        data['dest_host'] = m['meta']['input_destination']
         data['ipv6'] = False
         if ':' in source or ':' in destination:
             data['ipv6'] = True
@@ -45,11 +52,6 @@ class NetworkPacketLossCollector(collector.Collector):
             data['dest_VO'] = de[1]
         data['src_production'] = siteMapping.isProductionLatency(source)
         data['dest_production'] = siteMapping.isProductionLatency(destination)
-        if 'datapoints' not in m:
-            print(threading.current_thread().name, "no datapoints found in the message")
-            return
-        su = m['datapoints']
-        # print(su)
         for ts, th in su.items():
             data['_index'] = self.INDEX
             data['timestamp'] = int(float(ts) * 1000)
