@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import threading
-from threading import Thread
+# import threading
+# from threading import Thread
 import copy
 import json
 import collector
@@ -54,7 +54,7 @@ def isfloat(value):
 def clean(data):
     toDel = []
     for tag in data.keys():
-        if data[tag] == None or data[tag] == 'unknown':
+        if data[tag] is None or data[tag] == 'unknown':
             toDel.append(tag)
         if type(data[tag]) is dict:
             clean(data[tag])
@@ -93,7 +93,8 @@ class NetworkMetaCollector(collector.Collector):
                         for tp in s["testing_ports"]:
                             if 'type' not in tp:
                                 continue
-                            tps[tp['type']] = {"min_port": tp["min_port"], "max_port": tp["max_port"]}
+                            tps[tp['type']] = {"min_port": tp["min_port"],
+                                               "max_port": tp["max_port"]}
                         s['testing_ports'] = tps
                     data["services"][service_name] = s
                 else:

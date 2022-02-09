@@ -3,10 +3,10 @@
 # TO BE RUN ONLY AT CERN
 
 import threading
-from threading import Thread
+# from threading import Thread
 import copy
 import json
-import hashlib
+# import hashlib
 
 import collector
 
@@ -23,7 +23,7 @@ class NetworkLHCOPNCollector(collector.Collector):
         m = json.loads(message)
         data = {
         }
-        if not 'data'in m:
+        if 'data' not in m:
             print(threading.current_thread().name, 'no data in this message!')
             return
 

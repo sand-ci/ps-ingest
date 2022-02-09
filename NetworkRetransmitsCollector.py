@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import threading
-from threading import Thread
+# from threading import Thread
 import copy
 import json
-import hashlib
+# import hashlib
 
 import siteMapping
 import collector
@@ -37,16 +37,16 @@ class NetworkRetransmitsCollector(collector.Collector):
             data['ipv6'] = True
         so = siteMapping.getPS(source)
         de = siteMapping.getPS(destination)
-        if so != None:
+        if so is not None:
             data['src_site'] = so[0]
             data['src_VO'] = so[1]
-        if de != None:
+        if de is not None:
             data['dest_site'] = de[0]
             data['dest_VO'] = de[1]
         data['src_production'] = siteMapping.isProductionThroughput(source)
         data['dest_production'] = siteMapping.isProductionThroughput(
             destination)
-        if not 'datapoints'in m:
+        if 'datapoints' not in m:
             print(threading.current_thread().name,
                   'no datapoints in this message!')
             return

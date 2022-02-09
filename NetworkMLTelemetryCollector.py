@@ -3,10 +3,10 @@
 # NOT USED ANYMORE
 
 import threading
-from threading import Thread
+# from threading import Thread
 import copy
 import json
-import hashlib
+# import hashlib
 
 import collector
 import siteMapping
