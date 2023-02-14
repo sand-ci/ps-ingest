@@ -69,7 +69,7 @@ class NetworkTracerouteCollector(collector.Collector):
                 nq = int(hop['query'])
                 if nq != 1:
                     continue
-                data['hops'].append(hop['ip'])
+                data['hops'].append(hop['ip'].strip())
                 data['ttls'].append(int(hop['ttl']))
                 if 'rtt' in hop and hop['rtt'] is not None:
                     data['rtts'].append(float(hop['rtt']))
